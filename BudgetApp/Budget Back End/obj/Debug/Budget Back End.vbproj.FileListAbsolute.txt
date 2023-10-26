@@ -1,0 +1,89 @@
+C:\Users\Talvi\source\repos\BudgetApp\Budget Back End\bin\Budget Back End.dll.config
+C:\Users\Talvi\source\repos\BudgetApp\Budget Back End\bin\Budget Back End.dll
+C:\Users\Talvi\source\repos\BudgetApp\Budget Back End\bin\Budget Back End.pdb
+C:\Users\Talvi\source\repos\BudgetApp\Budget Back End\bin\Budget Back End.xml
+C:\Users\Talvi\source\repos\BudgetApp\Budget Back End\bin\roslyn\csc.exe
+C:\Users\Talvi\source\repos\BudgetApp\Budget Back End\bin\roslyn\csc.exe.config
+C:\Users\Talvi\source\repos\BudgetApp\Budget Back End\bin\roslyn\csc.rsp
+C:\Users\Talvi\source\repos\BudgetApp\Budget Back End\bin\roslyn\csi.exe
+C:\Users\Talvi\source\repos\BudgetApp\Budget Back End\bin\roslyn\csi.exe.config
+C:\Users\Talvi\source\repos\BudgetApp\Budget Back End\bin\roslyn\csi.rsp
+C:\Users\Talvi\source\repos\BudgetApp\Budget Back End\bin\roslyn\Microsoft.Build.Tasks.CodeAnalysis.dll
+C:\Users\Talvi\source\repos\BudgetApp\Budget Back End\bin\roslyn\Microsoft.CodeAnalysis.CSharp.dll
+C:\Users\Talvi\source\repos\BudgetApp\Budget Back End\bin\roslyn\Microsoft.CodeAnalysis.CSharp.Scripting.dll
+C:\Users\Talvi\source\repos\BudgetApp\Budget Back End\bin\roslyn\Microsoft.CodeAnalysis.dll
+C:\Users\Talvi\source\repos\BudgetApp\Budget Back End\bin\roslyn\Microsoft.CodeAnalysis.Scripting.dll
+C:\Users\Talvi\source\repos\BudgetApp\Budget Back End\bin\roslyn\Microsoft.CodeAnalysis.VisualBasic.dll
+C:\Users\Talvi\source\repos\BudgetApp\Budget Back End\bin\roslyn\Microsoft.CSharp.Core.targets
+C:\Users\Talvi\source\repos\BudgetApp\Budget Back End\bin\roslyn\Microsoft.DiaSymReader.Native.amd64.dll
+C:\Users\Talvi\source\repos\BudgetApp\Budget Back End\bin\roslyn\Microsoft.DiaSymReader.Native.x86.dll
+C:\Users\Talvi\source\repos\BudgetApp\Budget Back End\bin\roslyn\Microsoft.Managed.Core.targets
+C:\Users\Talvi\source\repos\BudgetApp\Budget Back End\bin\roslyn\Microsoft.VisualBasic.Core.targets
+C:\Users\Talvi\source\repos\BudgetApp\Budget Back End\bin\roslyn\Microsoft.Win32.Primitives.dll
+C:\Users\Talvi\source\repos\BudgetApp\Budget Back End\bin\roslyn\System.AppContext.dll
+C:\Users\Talvi\source\repos\BudgetApp\Budget Back End\bin\roslyn\System.Collections.Immutable.dll
+C:\Users\Talvi\source\repos\BudgetApp\Budget Back End\bin\roslyn\System.Console.dll
+C:\Users\Talvi\source\repos\BudgetApp\Budget Back End\bin\roslyn\System.Diagnostics.DiagnosticSource.dll
+C:\Users\Talvi\source\repos\BudgetApp\Budget Back End\bin\roslyn\System.Diagnostics.FileVersionInfo.dll
+C:\Users\Talvi\source\repos\BudgetApp\Budget Back End\bin\roslyn\System.Diagnostics.StackTrace.dll
+C:\Users\Talvi\source\repos\BudgetApp\Budget Back End\bin\roslyn\System.Globalization.Calendars.dll
+C:\Users\Talvi\source\repos\BudgetApp\Budget Back End\bin\roslyn\System.IO.Compression.dll
+C:\Users\Talvi\source\repos\BudgetApp\Budget Back End\bin\roslyn\System.IO.Compression.ZipFile.dll
+C:\Users\Talvi\source\repos\BudgetApp\Budget Back End\bin\roslyn\System.IO.FileSystem.dll
+C:\Users\Talvi\source\repos\BudgetApp\Budget Back End\bin\roslyn\System.IO.FileSystem.Primitives.dll
+C:\Users\Talvi\source\repos\BudgetApp\Budget Back End\bin\roslyn\System.Net.Http.dll
+C:\Users\Talvi\source\repos\BudgetApp\Budget Back End\bin\roslyn\System.Net.Sockets.dll
+C:\Users\Talvi\source\repos\BudgetApp\Budget Back End\bin\roslyn\System.Reflection.Metadata.dll
+C:\Users\Talvi\source\repos\BudgetApp\Budget Back End\bin\roslyn\System.Runtime.InteropServices.RuntimeInformation.dll
+C:\Users\Talvi\source\repos\BudgetApp\Budget Back End\bin\roslyn\System.Security.Cryptography.Algorithms.dll
+C:\Users\Talvi\source\repos\BudgetApp\Budget Back End\bin\roslyn\System.Security.Cryptography.Encoding.dll
+C:\Users\Talvi\source\repos\BudgetApp\Budget Back End\bin\roslyn\System.Security.Cryptography.Primitives.dll
+C:\Users\Talvi\source\repos\BudgetApp\Budget Back End\bin\roslyn\System.Security.Cryptography.X509Certificates.dll
+C:\Users\Talvi\source\repos\BudgetApp\Budget Back End\bin\roslyn\System.Text.Encoding.CodePages.dll
+C:\Users\Talvi\source\repos\BudgetApp\Budget Back End\bin\roslyn\System.Threading.Tasks.Extensions.dll
+C:\Users\Talvi\source\repos\BudgetApp\Budget Back End\bin\roslyn\System.ValueTuple.dll
+C:\Users\Talvi\source\repos\BudgetApp\Budget Back End\bin\roslyn\System.Xml.ReaderWriter.dll
+C:\Users\Talvi\source\repos\BudgetApp\Budget Back End\bin\roslyn\System.Xml.XmlDocument.dll
+C:\Users\Talvi\source\repos\BudgetApp\Budget Back End\bin\roslyn\System.Xml.XPath.dll
+C:\Users\Talvi\source\repos\BudgetApp\Budget Back End\bin\roslyn\System.Xml.XPath.XDocument.dll
+C:\Users\Talvi\source\repos\BudgetApp\Budget Back End\bin\roslyn\vbc.exe
+C:\Users\Talvi\source\repos\BudgetApp\Budget Back End\bin\roslyn\vbc.exe.config
+C:\Users\Talvi\source\repos\BudgetApp\Budget Back End\bin\roslyn\vbc.rsp
+C:\Users\Talvi\source\repos\BudgetApp\Budget Back End\bin\roslyn\VBCSCompiler.exe
+C:\Users\Talvi\source\repos\BudgetApp\Budget Back End\bin\roslyn\VBCSCompiler.exe.config
+C:\Users\Talvi\source\repos\BudgetApp\Budget Back End\bin\Antlr3.Runtime.dll
+C:\Users\Talvi\source\repos\BudgetApp\Budget Back End\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll
+C:\Users\Talvi\source\repos\BudgetApp\Budget Back End\bin\Microsoft.Web.Infrastructure.dll
+C:\Users\Talvi\source\repos\BudgetApp\Budget Back End\bin\Newtonsoft.Json.dll
+C:\Users\Talvi\source\repos\BudgetApp\Budget Back End\bin\System.Net.Http.Formatting.dll
+C:\Users\Talvi\source\repos\BudgetApp\Budget Back End\bin\System.Web.Helpers.dll
+C:\Users\Talvi\source\repos\BudgetApp\Budget Back End\bin\System.Web.Http.dll
+C:\Users\Talvi\source\repos\BudgetApp\Budget Back End\bin\System.Web.Http.WebHost.dll
+C:\Users\Talvi\source\repos\BudgetApp\Budget Back End\bin\System.Web.Mvc.dll
+C:\Users\Talvi\source\repos\BudgetApp\Budget Back End\bin\System.Web.Optimization.dll
+C:\Users\Talvi\source\repos\BudgetApp\Budget Back End\bin\System.Web.Razor.dll
+C:\Users\Talvi\source\repos\BudgetApp\Budget Back End\bin\System.Web.WebPages.Deployment.dll
+C:\Users\Talvi\source\repos\BudgetApp\Budget Back End\bin\System.Web.WebPages.dll
+C:\Users\Talvi\source\repos\BudgetApp\Budget Back End\bin\System.Web.WebPages.Razor.dll
+C:\Users\Talvi\source\repos\BudgetApp\Budget Back End\bin\WebGrease.dll
+C:\Users\Talvi\source\repos\BudgetApp\Budget Back End\bin\Newtonsoft.Json.xml
+C:\Users\Talvi\source\repos\BudgetApp\Budget Back End\bin\System.Net.Http.Formatting.xml
+C:\Users\Talvi\source\repos\BudgetApp\Budget Back End\bin\System.Web.Helpers.xml
+C:\Users\Talvi\source\repos\BudgetApp\Budget Back End\bin\System.Web.Http.xml
+C:\Users\Talvi\source\repos\BudgetApp\Budget Back End\bin\System.Web.Http.WebHost.xml
+C:\Users\Talvi\source\repos\BudgetApp\Budget Back End\bin\System.Web.Mvc.xml
+C:\Users\Talvi\source\repos\BudgetApp\Budget Back End\bin\System.Web.Optimization.xml
+C:\Users\Talvi\source\repos\BudgetApp\Budget Back End\bin\System.Web.Razor.xml
+C:\Users\Talvi\source\repos\BudgetApp\Budget Back End\bin\System.Web.WebPages.xml
+C:\Users\Talvi\source\repos\BudgetApp\Budget Back End\bin\System.Web.WebPages.Deployment.xml
+C:\Users\Talvi\source\repos\BudgetApp\Budget Back End\bin\System.Web.WebPages.Razor.xml
+C:\Users\Talvi\source\repos\BudgetApp\Budget Back End\bin\Antlr3.Runtime.pdb
+C:\Users\Talvi\source\repos\BudgetApp\Budget Back End\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
+C:\Users\Talvi\source\repos\BudgetApp\Budget Back End\obj\Debug\Budget Back End.vbproj.AssemblyReference.cache
+C:\Users\Talvi\source\repos\BudgetApp\Budget Back End\obj\Debug\Budget_Back_End.Resources.resources
+C:\Users\Talvi\source\repos\BudgetApp\Budget Back End\obj\Debug\Budget Back End.vbproj.GenerateResource.cache
+C:\Users\Talvi\source\repos\BudgetApp\Budget Back End\obj\Debug\Budget Back End.vbproj.CoreCompileInputs.cache
+C:\Users\Talvi\source\repos\BudgetApp\Budget Back End\obj\Debug\Budget Back End.vbproj.CopyComplete
+C:\Users\Talvi\source\repos\BudgetApp\Budget Back End\obj\Debug\Budget Back End.dll
+C:\Users\Talvi\source\repos\BudgetApp\Budget Back End\obj\Debug\Budget Back End.xml
+C:\Users\Talvi\source\repos\BudgetApp\Budget Back End\obj\Debug\Budget Back End.pdb

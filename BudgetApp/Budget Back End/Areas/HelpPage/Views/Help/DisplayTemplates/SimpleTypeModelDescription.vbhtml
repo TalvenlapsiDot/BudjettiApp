@@ -1,0 +1,3 @@
+@Imports Budget_Back_End.Areas.HelpPage.ModelDescriptions
+@ModelType SimpleTypeModelDescription
+@Model.Documentation
