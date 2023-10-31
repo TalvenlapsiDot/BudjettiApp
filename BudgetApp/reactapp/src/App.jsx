@@ -1,4 +1,6 @@
+import { ChakraProvider } from '@chakra-ui/react'
 import React, { Component } from 'react';
+
 
 export default class App extends Component {
     static displayName = App.name;
@@ -43,11 +45,13 @@ export default class App extends Component {
             : App.renderForecastsTable(this.state.forecasts);
 
         return (
+            <ChakraProvider>
             <div>
                 <h1 id="tabelLabel" >Weather forecast</h1>
                 <p>This component demonstrates fetching data from the server.</p>
                 {contents}
             </div>
+            </ChakraProvider>
         );
     }
 
