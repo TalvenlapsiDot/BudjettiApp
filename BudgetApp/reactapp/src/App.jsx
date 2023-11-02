@@ -1,7 +1,6 @@
 import {Box } from '@chakra-ui/react'
 import React, { Component } from 'react';
-
-
+import './global.styles.css'
 
 export default class App extends Component {
     static displayName = App.name;
