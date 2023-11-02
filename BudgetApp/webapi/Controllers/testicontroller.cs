@@ -6,7 +6,7 @@ namespace Back_End.Controllers
 	{
 		public IActionResult Index()
 		{
-			return View();
+			return View(ganggang);
 		}
 	}
 }
