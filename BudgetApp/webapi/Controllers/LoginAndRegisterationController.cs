@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using Back_End.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Back_End.Models;
-using Microsoft.EntityFrameworkCore.Update.Internal;
 
 // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
 
@@ -51,7 +45,7 @@ namespace Back_End.Controllers
         // Delete user & related data
         // Delete all data related to user before the deletion from Users table or you'll get errors related to keys
         [HttpDelete]
-        [Route("Delete/{UserId}")]
+        [Route("Delete")]
         public async Task<IActionResult> DeleteUserAndData(int UserId)
         {
             if (UserId == 0)
@@ -73,7 +67,7 @@ namespace Back_End.Controllers
 
             foreach (var b in ExistingBudgets)
             {
-                 _context.Budgets.Remove(b);
+                _context.Budgets.Remove(b);
             }
 
             // Delete Income data
@@ -81,7 +75,7 @@ namespace Back_End.Controllers
                                   where User.UserId == i.UserId
                                   select i;
 
-            foreach(var i in ExistingIncomes)
+            foreach (var i in ExistingIncomes)
             {
                 _context.Incomes.Remove(i);
             }
@@ -90,7 +84,7 @@ namespace Back_End.Controllers
             var ExistingExpenditures = from e in _context.Expenditures
                                        where User.UserId == e.UserId
                                        select e;
-            
+
             foreach (var e in ExistingExpenditures)
             {
                 _context.Expenditures.Remove(e);
@@ -103,22 +97,56 @@ namespace Back_End.Controllers
             return NoContent();
         }
 
-        // Login
-        [HttpPost]
-        [Route("Login")]
-        public async Task<ActionResult<IEnumerable<User>>> Login(User user)
+        // Edit user
+        [HttpPut]
+        [Route("Edit")]
+        public async Task<IActionResult> EditUser(User User)
         {
+            if (User == null)
+            {
+                return BadRequest("Request was null");
+            }
 
+            _context.Entry(User).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+            return NoContent();
         }
+
+        // Login
+        //[HttpPost]
+        //[Route("Login")]
+        //public async Task<ActionResult<IEnumerable<User>>> Login(User User)
+        //{
+        //    if (User == null)
+        //    {
+        //        return BadRequest("Request was null");
+        //    }
+
+
+
+
+
+        //}
+
+        // ------------------------------------------------------------ //
 
         // GET: api/LoginAndRegisteration/5
         [HttpGet("{id}")]
         public async Task<ActionResult<User>> GetUser(int id)
         {
-          if (_context.Users == null)
-          {
-              return NotFound();
-          }
+            if (_context.Users == null)
+            {
+                return NotFound();
+            }
             var user = await _context.Users.FindAsync(id);
 
             if (user == null)
