@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Back_End.Models;
+using Microsoft.EntityFrameworkCore.Update.Internal;
 
 // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
 
@@ -48,21 +49,52 @@ namespace Back_End.Controllers
         }
 
         // Delete user & related data
+        // Delete all data related to user before the deletion from Users table or you'll get errors related to keys
         [HttpDelete]
-        [Route("Delete/{id}")]
-        public async Task<IActionResult> DeleteUser(int id)
+        [Route("Delete/{UserId}")]
+        public async Task<IActionResult> DeleteUserAndData(int UserId)
         {
-            if (_context.Users == null)
+            if (UserId == 0)
             {
-                return NotFound();
-            }
-            var user = await _context.Users.FindAsync(id);
-            if (user == null)
-            {
-                return NotFound();
+                return BadRequest("Request was null");
             }
 
-            _context.Users.Remove(user);
+            var User = await _context.Users.FindAsync(UserId);
+
+            if (User == null)
+            {
+                return NotFound("UserId not found");
+            }
+
+            // Delete budget data
+            var ExistingBudgets = from b in _context.Budgets
+                                  select b;
+
+            foreach (var b in ExistingBudgets)
+            {
+                _context.Budgets.Remove(b);
+            }
+
+            // Delete Income data
+            var ExistingIncomes = from i in _context.Incomes
+                                  select i;
+
+            foreach(var i in ExistingIncomes)
+            {
+                _context.Incomes.Remove(i);
+            }
+
+            // Delete Expenditure data
+            var ExistingExpenditures = from e in _context.Expenditures
+                                       select e;
+            
+            foreach (var e in ExistingExpenditures)
+            {
+                _context.Expenditures.Remove(e);
+            }
+
+            // Delete user & save changes
+            _context.Users.Remove(User);
             await _context.SaveChangesAsync();
 
             return NoContent();
