@@ -1,63 +1,17 @@
-import { ChakraProvider } from '@chakra-ui/react'
+import {Box } from '@chakra-ui/react'
 import React, { Component } from 'react';
+
 
 
 export default class App extends Component {
     static displayName = App.name;
 
-    constructor(props) {
-        super(props);
-        this.state = { forecasts: [], loading: true };
-    }
-
-    componentDidMount() {
-        this.populateWeatherData();
-    }
-
-    static renderForecastsTable(forecasts) {
-        return (
-            <table className='table table-striped' aria-labelledby="tabelLabel">
-                <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>Temp. (C)</th>
-                        <th>Temp. (F)</th>
-                        <th>Summary</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {forecasts.map(forecast =>
-                        <tr key={forecast.date}>
-                            <td>{forecast.date}</td>
-                            <td>{forecast.temperatureC}</td>
-                            <td>{forecast.temperatureF}</td>
-                            <td>{forecast.summary}</td>
-                        </tr>
-                    )}
-                </tbody>
-            </table>
-        );
-    }
-
     render() {
-        let contents = this.state.loading
-            ? <p><em>Loading... Please refresh once the ASP.NET backend has started. See <a href="https://aka.ms/jspsintegrationreact">https://aka.ms/jspsintegrationreact</a> for more details.</em></p>
-            : App.renderForecastsTable(this.state.forecasts);
-
         return (
-            <ChakraProvider>
-            <div>
-                <h1 id="tabelLabel" >Weather forecast</h1>
-                <p>This component demonstrates fetching data from the server.</p>
-                {contents}
-            </div>
-            </ChakraProvider>
+                <Box w="700px" h="500px" bg="teal.400" p="5" borderRadius="25" boxShadow="xl" marginTop="200" maxWidth="700px" zIndex="1" marginLeft="auto" marginRight="auto">
+                <h1 id="tabelLabel" >FrontPage Here Later Maybe Idk Man</h1>
+                <p>Derp</p>
+                </Box>
         );
-    }
-
-    async populateWeatherData() {
-        const response = await fetch('weatherforecast');
-        const data = await response.json();
-        this.setState({ forecasts: data, loading: false });
     }
 }
