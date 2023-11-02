@@ -41,10 +41,10 @@ public partial class BudgetAppDbContext : DbContext
             entity.Property(e => e.StartDate).HasColumnType("datetime");
             entity.Property(e => e.UserId).HasColumnName("UserID");
 
-            entity.HasOne(d => d.User).WithMany(p => p.Budgets)
-                .HasForeignKey(d => d.UserId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Budget__UserID__628FA481");
+            //entity.HasOne(d => d.User).WithMany(p => p.Budgets)
+            //    .HasForeignKey(d => d.UserId)
+            //    .OnDelete(DeleteBehavior.ClientSetNull)
+            //    .HasConstraintName("FK__Budget__UserID__628FA481");
         });
 
         modelBuilder.Entity<Category>(entity =>
