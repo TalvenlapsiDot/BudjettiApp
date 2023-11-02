@@ -68,15 +68,17 @@ namespace Back_End.Controllers
 
             // Delete budget data
             var ExistingBudgets = from b in _context.Budgets
+                                  where User.UserId == b.UserId
                                   select b;
 
             foreach (var b in ExistingBudgets)
             {
-                _context.Budgets.Remove(b);
+                 _context.Budgets.Remove(b);
             }
 
             // Delete Income data
             var ExistingIncomes = from i in _context.Incomes
+                                  where User.UserId == i.UserId
                                   select i;
 
             foreach(var i in ExistingIncomes)
@@ -86,6 +88,7 @@ namespace Back_End.Controllers
 
             // Delete Expenditure data
             var ExistingExpenditures = from e in _context.Expenditures
+                                       where User.UserId == e.UserId
                                        select e;
             
             foreach (var e in ExistingExpenditures)
@@ -100,15 +103,12 @@ namespace Back_End.Controllers
             return NoContent();
         }
 
-        // GET: api/LoginAndRegisteration
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<User>>> GetUsers()
+        // Login
+        [HttpPost]
+        [Route("Login")]
+        public async Task<ActionResult<IEnumerable<User>>> Login(User user)
         {
-          if (_context.Users == null)
-          {
-              return NotFound();
-          }
-            return await _context.Users.ToListAsync();
+
         }
 
         // GET: api/LoginAndRegisteration/5
