@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Back_End.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("API/[controller]")]
     [ApiController]
     public class LoginAndRegisterationController : ControllerBase
     {
@@ -25,7 +25,7 @@ namespace Back_End.Controllers
         {
             if (user == null)
             {
-                return BadRequest("Request was null");
+                return BadRequest();
             }
 
             var ExistingUsers = from u in _context.Users
@@ -45,19 +45,19 @@ namespace Back_End.Controllers
         // Delete user & related data
         // Delete all data related to user before the deletion from Users table or you'll get errors related to keys
         [HttpDelete]
-        [Route("Delete")]
+        [Route("Delete/{UserId}")]
         public async Task<IActionResult> DeleteUserAndData(int UserId)
         {
             if (UserId == 0)
             {
-                return BadRequest("Request was null");
+                return BadRequest();
             }
 
             var User = await _context.Users.FindAsync(UserId);
 
             if (User == null)
             {
-                return NotFound("UserId not found");
+                return NotFound();
             }
 
             // Delete budget data
@@ -94,17 +94,17 @@ namespace Back_End.Controllers
             _context.Users.Remove(User);
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            return Ok();
         }
 
         // Edit user
         [HttpPut]
-        [Route("Edit")]
-        public async Task<IActionResult> EditUser(User User)
+        [Route("Edit/{UserId}")]
+        public async Task<IActionResult> EditUser(int UserId, User User)
         {
-            if (User == null)
+            if (User == null || UserId != User.UserId)
             {
-                return BadRequest("Request was null");
+                return BadRequest();
             }
 
             _context.Entry(User).State = EntityState.Modified;
@@ -113,12 +113,12 @@ namespace Back_End.Controllers
             {
                 await _context.SaveChangesAsync();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return BadRequest(ex.Message);
+                return BadRequest();
             }
 
-            return NoContent();
+            return Ok("Succesful");
         }
 
         // Login
@@ -137,60 +137,5 @@ namespace Back_End.Controllers
 
         //}
 
-        // ------------------------------------------------------------ //
-
-        // GET: api/LoginAndRegisteration/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<User>> GetUser(int id)
-        {
-            if (_context.Users == null)
-            {
-                return NotFound();
-            }
-            var user = await _context.Users.FindAsync(id);
-
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            return user;
-        }
-
-        // PUT: api/LoginAndRegisteration/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutUser(int id, User user)
-        {
-            if (id != user.UserId)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(user).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!UserExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-
-        private bool UserExists(int id)
-        {
-            return (_context.Users?.Any(e => e.UserId == id)).GetValueOrDefault();
-        }
     }
 }
