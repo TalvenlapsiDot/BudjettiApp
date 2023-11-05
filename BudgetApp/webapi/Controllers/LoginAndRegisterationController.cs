@@ -1,4 +1,7 @@
-﻿using Back_End.Models;
+﻿using Back_End.Context;
+using Back_End.Models;
+using Back_End.Services;
+using Microsoft.AspNetCore.Connections.Features;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,11 +14,14 @@ namespace Back_End.Controllers
     public class LoginAndRegisterationController : ControllerBase
     {
         private readonly BudgetAppDbContext _context;
+        private readonly IConfiguration _configuration;
 
-        public LoginAndRegisterationController(BudgetAppDbContext context)
+        public LoginAndRegisterationController(BudgetAppDbContext context, IConfiguration configuration)
         {
             _context = context;
+            _configuration = configuration;
         }
+
 
         // Register new users
         // UserId is assigned AFTER creation, so don't compare to existing users with it!
@@ -40,6 +46,30 @@ namespace Back_End.Controllers
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("RegisterUser", new { id = user.UserId }, user);
+        }
+
+        // Login
+        [HttpPost]
+        [Route("Login")]
+        public ActionResult<IEnumerable<User>> Login(User User)
+        {
+            if (User == null)
+            {
+                return BadRequest("Null request");
+            }
+
+            var ExistingUsers = from u in _context.Users
+                                where u.Username == User.Username && u.Password == User.Password
+                                select u;
+
+            if (ExistingUsers.Count() <= 0)
+            {
+                return BadRequest("User not found");
+            }
+
+            string Result = JWT.GenerateToken(User, _configuration);
+
+            return Ok(Result);
         }
 
         // Delete user & related data
@@ -120,22 +150,6 @@ namespace Back_End.Controllers
 
             return Ok("Succesful");
         }
-
-        // Login
-        //[HttpPost]
-        //[Route("Login")]
-        //public async Task<ActionResult<IEnumerable<User>>> Login(User User)
-        //{
-        //    if (User == null)
-        //    {
-        //        return BadRequest("Request was null");
-        //    }
-
-
-
-
-
-        //}
 
     }
 }

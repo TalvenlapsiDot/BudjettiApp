@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using Back_End.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace Back_End.Models;
+namespace Back_End.Context;
 
 public partial class BudgetAppDbContext : DbContext
 {
