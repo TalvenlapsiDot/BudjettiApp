@@ -1,11 +1,9 @@
-:root {
-  background-image: url("./assets/lowpoly.png");
+html, body, #root {
+  height: 100%;
+  width: 100%;
 }
 
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
-  background-image: url("./assets/lowpoly.png");
+  /*CSS doesn't understand js values and stuff so use CSS variables from ChakraUI */
+  background: var(--chakra-colors-teal-500);
 }
