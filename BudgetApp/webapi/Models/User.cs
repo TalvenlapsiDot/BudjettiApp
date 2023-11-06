@@ -14,11 +14,3 @@ public partial class User
 
     //public virtual ICollection<Budget> Budgets { get; set; } = new List<Budget>();
 }
-
-public partial class UserDTO
-{
-    public int UserId { get; set; }
-    public string Username { get; set; } = string.Empty;
-    public string PasswordHash { get; set; } = string.Empty;
-
-}

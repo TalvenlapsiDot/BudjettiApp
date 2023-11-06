@@ -67,14 +67,14 @@ namespace Back_End.Controllers
                 return BadRequest("User not found");
             }
 
-            string Token = JWT.GenerateToken(User, _configuration);
+            string Token = JWT.GenerateTokenUser(User, _configuration);
 
             return Ok(Token);
         }
 
         // Delete user & related data
         // Delete all data related to user before the deletion from Users table or you'll get errors related to keys
-        [HttpDelete, Authorize]
+        [HttpDelete, Authorize(Roles = "User")]
         [Route("Delete")]
         public async Task<IActionResult> DeleteUserAndData(int UserId)
         {
