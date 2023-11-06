@@ -29,5 +29,11 @@ namespace Back_End.Services
             return Result;
         }
 
+        public static string ValidateToken()
+        {
+
+            return string.Empty;
+        }
+
     }
 }

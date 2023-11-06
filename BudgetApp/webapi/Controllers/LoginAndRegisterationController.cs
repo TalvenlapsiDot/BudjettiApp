@@ -1,6 +1,7 @@
 ﻿using Back_End.Context;
 using Back_End.Models;
 using Back_End.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Connections.Features;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -21,7 +22,6 @@ namespace Back_End.Controllers
             _context = context;
             _configuration = configuration;
         }
-
 
         // Register new users
         // UserId is assigned AFTER creation, so don't compare to existing users with it!
@@ -67,15 +67,15 @@ namespace Back_End.Controllers
                 return BadRequest("User not found");
             }
 
-            string Result = JWT.GenerateToken(User, _configuration);
+            string Token = JWT.GenerateToken(User, _configuration);
 
-            return Ok(Result);
+            return Ok(Token);
         }
 
         // Delete user & related data
         // Delete all data related to user before the deletion from Users table or you'll get errors related to keys
-        [HttpDelete]
-        [Route("Delete/{UserId}")]
+        [HttpDelete, Authorize]
+        [Route("Delete")]
         public async Task<IActionResult> DeleteUserAndData(int UserId)
         {
             if (UserId == 0)
@@ -128,7 +128,7 @@ namespace Back_End.Controllers
         }
 
         // Edit user
-        [HttpPut]
+        [HttpPut, Authorize(Roles = "User")]
         [Route("Edit/{UserId}")]
         public async Task<IActionResult> EditUser(int UserId, User User)
         {
