@@ -11,9 +11,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<BudgetAppDbContext>();
 builder.Services.AddAuthentication().AddJwtBearer(options =>
 { 
+    options.IncludeErrorDetails = true; // Always include this or you will end up suicidal
     options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
     {
-        ValidateIssuerSigningKey = true,
+        ValidateIssuerSigningKey = false,
         ValidateAudience = false, // Audience references the receiver of token
         ValidateIssuer = false, 
         ValidIssuer = builder.Configuration["Jwt:Secret"],

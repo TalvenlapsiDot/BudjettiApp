@@ -74,7 +74,7 @@ namespace Back_End.Controllers
 
         // Delete user & related data
         // Delete all data related to user before the deletion from Users table or you'll get errors related to keys
-        [HttpDelete, Authorize(Roles = "User")]
+        [HttpDelete, Authorize]
         [Route("Delete")]
         public async Task<IActionResult> DeleteUserAndData(int UserId)
         {
@@ -87,7 +87,7 @@ namespace Back_End.Controllers
 
             if (User == null)
             {
-                return NotFound();
+                return NotFound("User not found");
             }
 
             // Delete budget data

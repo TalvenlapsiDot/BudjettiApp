@@ -19,9 +19,11 @@ namespace Back_End.Services
             SymmetricSecurityKey? Key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetSection("Jwt:Secret").Value!));
             SigningCredentials? Credentials = new SigningCredentials(Key, SecurityAlgorithms.HmacSha256Signature);
 
+            var Expires = DateTime.Now.AddHours(2);
+
             JwtSecurityToken Token = new JwtSecurityToken(
                 claims: Claims,
-                expires: DateTime.Now.AddDays(0.25),
+                expires: Expires,
                 signingCredentials: Credentials
 
                 );
