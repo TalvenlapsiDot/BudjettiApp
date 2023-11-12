@@ -76,14 +76,14 @@ namespace Back_End.Controllers
         // Delete all data related to user before the deletion from Users table or you'll get errors related to keys
         [HttpDelete, Authorize]
         [Route("Delete")]
-        public async Task<IActionResult> DeleteUserAndData(int UserId)
+        public async Task<IActionResult> DeleteUserAndData(User user)
         {
-            if (UserId == 0)
+            if (user.UserId == 0)
             {
                 return BadRequest();
             }
 
-            var User = await _context.Users.FindAsync(UserId);
+            var User = await _context.Users.FindAsync(user.UserId);
 
             if (User == null)
             {
