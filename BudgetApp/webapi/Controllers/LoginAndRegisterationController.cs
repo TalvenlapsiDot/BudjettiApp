@@ -4,7 +4,10 @@ using Back_End.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Connections.Features;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text.RegularExpressions;
 
 // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
 
@@ -23,29 +26,37 @@ namespace Back_End.Controllers
             _configuration = configuration;
         }
 
-        // Register new users
         // UserId is assigned AFTER creation, so don't compare to existing users with it!
         [HttpPost]
         [Route("Register")]
-        public async Task<ActionResult> RegisterUser(User user)
+        public async Task<ActionResult> RegisterUser(User User)
         {
-            if (user == null)
+            // Min length 5, max length 25, only allow -_ special characters
+            Regex UsernameRules = new Regex(@"^[a-zA-Z0-9_-]{5,25}$");
+            // Min length 10, max length 50, contains atleast one upper & lowercase character, one digit
+            Regex PasswordRules = new Regex("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{10,50}$");
+
+            // Get existing users with requested username. Use parameters to combat sql injection
+            List<User> ExistingUsers = _context.Users.FromSql($"Select * FROM Users WHERE Username = {@User.Username};").ToList();
+
+            if (User.Username.IsNullOrEmpty() || User.Password.IsNullOrEmpty())
             {
-                return BadRequest();
+                return StatusCode(StatusCodes.Status204NoContent, "Empty request!");
+            }
+            else if (!UsernameRules.IsMatch(User.Username) || !PasswordRules.IsMatch(User.Password))
+            {
+                return StatusCode(StatusCodes.Status406NotAcceptable, "Regex error!");
+            }
+            else if (ExistingUsers.Count() > 0)
+            {
+                return StatusCode(StatusCodes.Status409Conflict, "User already exists");
             }
 
-            var ExistingUsers = from u in _context.Users
-                                select u.Username;
-
-            if (ExistingUsers.Contains(user.Username))
-            {
-                return Problem("User already exists!");
-            }
-
-            _context.Users.Add(user);
+            // Add user to DB
+            _context.Database.ExecuteSqlRaw($"INSERT INTO Users VALUES ('{@User.Username}', '{@User.Password}');");
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("RegisterUser", new { id = user.UserId }, user);
+            return StatusCode(StatusCodes.Status201Created, "User creation succesful!");
         }
 
         // Login
