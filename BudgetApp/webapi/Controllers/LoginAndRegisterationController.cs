@@ -26,7 +26,6 @@ namespace Back_End.Controllers
             _configuration = configuration;
         }
 
-        // UserId is assigned AFTER creation, so don't compare to existing users with it!
         [HttpPost]
         [Route("Register")]
         public async Task<ActionResult> RegisterUser(User User)
@@ -36,8 +35,8 @@ namespace Back_End.Controllers
             // Min length 10, max length 50, contains atleast one upper & lowercase character, one digit
             Regex PasswordRules = new Regex("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{10,50}$");
 
-            // Get existing users with requested username. Use parameters to combat sql injection
-            List<User> ExistingUsers = _context.Users.FromSql($"Select * FROM Users WHERE Username = {@User.Username};").ToList();
+            // Get existing users with requested username. Use parameters to combat sql injection!
+            List<User> ExistingUsers = _context.Users.FromSql($"SELECT * FROM Users WHERE Username = {@User.Username};").ToList();
 
             if (User.Username.IsNullOrEmpty() || User.Password.IsNullOrEmpty())
             {
@@ -59,13 +58,12 @@ namespace Back_End.Controllers
             return StatusCode(StatusCodes.Status201Created, "User creation succesful!");
         }
 
-        // Login
         [HttpPost]
         [Route("Login")]
         public ActionResult Login(User User)
         {
-            // Get existing users with requested username & password. Use parameters to combat sql injection
-            List<User> ExistingUsers = _context.Users.FromSql($"Select * FROM Users WHERE Username = {@User.Username} AND Password = {User.Password};").ToList();
+            // Get existing users with requested username & password. Use parameters to combat sql injection!
+            List<User> ExistingUsers = _context.Users.FromSql($"SELECT * FROM Users WHERE Username = {@User.Username} AND Password = {User.Password};").ToList();
 
             if (User.Username.IsNullOrEmpty() || User.Password.IsNullOrEmpty())
             {
@@ -77,28 +75,25 @@ namespace Back_End.Controllers
             }
 
             // Generate a Json web token and return it
-            string Token = JWT.GenerateTokenUser(User, _configuration);
+            string Token = JsonWebTokenService.GenerateTokenUser(User, _configuration);
 
             return StatusCode(StatusCodes.Status200OK, Token);
         }
 
-        // Delete user & related data
-        // Delete all data related to user before the deletion from Users table or you'll get errors related to keys
+        // Delete all data related to user before the deletion from Users table or you'll get errors related to keys!
         [HttpDelete, Authorize]
         [Route("Delete")]
-        public async Task<IActionResult> DeleteUserAndData(User user)
+        public async Task<ActionResult> DeleteUserAndData(string unique_name)
         {
-            if (user.UserId == 0)
+            // Get existing users with requested username. Use parameters to combat sql injection!
+            List<User> Users = _context.Users.FromSql($"SELECT * FROM USERS WHERE Username = {unique_name}").ToList();
+
+            if (Users.Count() <= 0)
             {
-                return BadRequest();
+                return StatusCode(StatusCodes.Status404NotFound, "User not found!");
             }
 
-            var User = await _context.Users.FindAsync(user.UserId);
-
-            if (User == null)
-            {
-                return NotFound("User not found");
-            }
+            User User = Users[0];
 
             // Delete budget data
             var ExistingBudgets = from b in _context.Budgets
@@ -134,7 +129,7 @@ namespace Back_End.Controllers
             _context.Users.Remove(User);
             await _context.SaveChangesAsync();
 
-            return Ok();
+            return StatusCode(StatusCodes.Status200OK, "Deleted succesfully!");
         }
 
         // Edit user
