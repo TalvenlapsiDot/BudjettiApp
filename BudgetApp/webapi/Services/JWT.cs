@@ -8,6 +8,7 @@ namespace Back_End.Services
 {
     public class JWT
     {
+        // Needs improvements, but this will do for now
         public static string GenerateTokenUser(User User, IConfiguration _configuration)
         {
             JwtSecurityTokenHandler Handler = new JwtSecurityTokenHandler();

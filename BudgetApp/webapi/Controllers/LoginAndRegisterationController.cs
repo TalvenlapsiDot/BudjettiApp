@@ -62,25 +62,24 @@ namespace Back_End.Controllers
         // Login
         [HttpPost]
         [Route("Login")]
-        public ActionResult<IEnumerable<User>> Login(User User)
+        public ActionResult Login(User User)
         {
-            if (User == null)
+            // Get existing users with requested username & password. Use parameters to combat sql injection
+            List<User> ExistingUsers = _context.Users.FromSql($"Select * FROM Users WHERE Username = {@User.Username} AND Password = {User.Password};").ToList();
+
+            if (User.Username.IsNullOrEmpty() || User.Password.IsNullOrEmpty())
             {
-                return BadRequest("Null request");
+                return StatusCode(StatusCodes.Status204NoContent, "Empty request!");
+            }
+            else if (ExistingUsers.Count() <= 0)
+            {
+                return StatusCode(StatusCodes.Status404NotFound, "User not found!");
             }
 
-            var ExistingUsers = from u in _context.Users
-                                where u.Username == User.Username && u.Password == User.Password
-                                select u;
-
-            if (ExistingUsers.Count() <= 0)
-            {
-                return BadRequest("User not found");
-            }
-
+            // Generate a Json web token and return it
             string Token = JWT.GenerateTokenUser(User, _configuration);
 
-            return Ok(Token);
+            return StatusCode(StatusCodes.Status200OK, Token);
         }
 
         // Delete user & related data
