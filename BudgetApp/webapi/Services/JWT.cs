@@ -8,11 +8,14 @@ namespace Back_End.Services
 {
     public class JWT
     {
-        private static readonly TimeSpan time = TimeSpan.FromHours(1);
         public static string GenerateTokenUser(User User, IConfiguration _configuration)
         {
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.UTF8.GetBytes(_configuration.GetSection("Jwt:Secret").Value!);
+            JwtSecurityTokenHandler Handler = new JwtSecurityTokenHandler();
+
+            var TokenLifeTime = _configuration.GetSection("Jwt:TokenLifeTime").Value!;
+            TimeSpan Hours = TimeSpan.Parse(TokenLifeTime);
+
+            byte[] Key = Encoding.UTF8.GetBytes(_configuration.GetSection("Jwt:Secret").Value!);
 
             List<Claim> Claims = new List<Claim>()
             {
@@ -20,20 +23,20 @@ namespace Back_End.Services
                 //new Claim(ClaimTypes.Role, "User")
             };
 
-            var tokenDescriptiptor = new SecurityTokenDescriptor
+            SecurityTokenDescriptor tokenDescriptiptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(Claims),
-                Expires = DateTime.UtcNow.Add(time),
-                Issuer = "https://localhost:7123/",
-                Audience = "https://localhost:7123/",
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+                Expires = DateTime.UtcNow.Add(Hours),
+                Issuer = "https://localhost:7123/", // Invalid?
+                Audience = "https://localhost:7123/", // Invalid?
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(Key), SecurityAlgorithms.HmacSha256Signature)
             };
 
-            var token = tokenHandler.CreateToken(tokenDescriptiptor);
+            SecurityToken Token = Handler.CreateToken(tokenDescriptiptor);
 
-            var jwt = tokenHandler.WriteToken(token);
+            string Jwt = Handler.WriteToken(Token);
 
-            return jwt;
+            return Jwt;
         }
 
     }
