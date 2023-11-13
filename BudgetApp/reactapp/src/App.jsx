@@ -1,10 +1,10 @@
-import {Box, Button, Flex} from '@chakra-ui/react'
+import {Box, Button, Container, Flex, Divider, Tabs, TabList, TabPanels, Tab, TabPanel} from '@chakra-ui/react'
 import { useState } from 'react';
+/* Remember to import useState you dingus I know you'll forget it in future TALVI.
+So when you come to debug it THIS IS WHY IT DOESN'T WORK. */
+import Login from './components/Login';
+import Income from './components/Income';
 
-import Dingle from './Dingle';
-import Dangle from './Dangle';
-
-import styles from './styles.css'
 
 const App = () => {
     /* React usestate hook to change the status of login or whatever when it's called also translate to Finnish someday*/
@@ -14,28 +14,39 @@ const App = () => {
         /* Insert here about why the Flex works, tldr direction gives vertical/horizontal
         and height makes it use 100% of the height on screen idk translate to finnish sometime
         some stuff about HTML elements taking only the space they need unless told otherwise */
+        /*Maybe multiple cards instead of tabs, look into it
+        https://chakra-ui.com/docs/components/card */
         <Flex direction='column' justifyContent='center' align='center' height='100%'>
             <Box
+                zIndex="2"
                 w="700px"
-                h="600px"
-                bg="whiteAlpha.500"
+                h="700px"
+                bg="gray.600"
                 p="5"
                 borderRadius="25"
                 boxShadow="xl"
                 maxWidth="700px"
-                zIndex="1"
             >
-                <h1>FrontPage Here Later Maybe Idk Man</h1>
-                <p>Derp</p>
+            <Tabs isFitted marginBottom='10' variant='soft-rounded'>
+            <TabList background='blackAlpha.300' borderRadius='300' >
+              <Tab _hover={{ color: 'white' }}  fontWeight="bold" textColor='teal.300'>Income</Tab>
+              <Tab _hover={{ color: 'white' }} fontWeight="bold" textColor='teal.300'>Expenses</Tab>
+              <Tab _hover={{ color: 'white' }} fontWeight="bold" textColor='teal.300'>Overview</Tab>
+            </TabList>
 
-                <Dingle />
-
-                <Dangle />
-
-                <Button onClick={() => setAuthenticated(true)} />
-
-                {/* This is a "short-circui"*/}
-                {authenticated && (<div>Hello user!</div>)}
+            <TabPanels>
+              <TabPanel>
+                <Income />
+              </TabPanel>
+              <TabPanel>
+              <Income />
+              </TabPanel>
+              <TabPanel>
+              <Income />
+              </TabPanel>
+            </TabPanels>
+          </Tabs>
+          <Login/>
             </Box>
         </Flex>
     );

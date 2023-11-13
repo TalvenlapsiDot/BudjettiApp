@@ -5,5 +5,5 @@ html, body, #root {
 
 #root {
   /*CSS doesn't understand js values and stuff so use CSS variables from ChakraUI */
-  background: var(--chakra-colors-teal-500);
+  background: var(--chakra-colors-gray-900);
 }

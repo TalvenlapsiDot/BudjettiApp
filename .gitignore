@@ -133,3 +133,5 @@ project.lock.json
 
 # Kubernetes
 .kube
+
+appsettings.json
