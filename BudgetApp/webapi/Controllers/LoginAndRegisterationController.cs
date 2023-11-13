@@ -28,11 +28,11 @@ namespace Back_End.Controllers
 
         [HttpPost]
         [Route("Register")]
-        public async Task<ActionResult> RegisterUser(User User)
+        public async Task<IActionResult> RegisterUser(User User)
         {
             // Min length 5, max length 25, only allow -_ special characters
             Regex UsernameRules = new Regex(@"^[a-zA-Z0-9_-]{5,25}$");
-            // Min length 10, max length 50, contains atleast one upper & lowercase character, one digit
+            // Min length 10, max length 50, contains atleast one digit, upper & lowercase character
             Regex PasswordRules = new Regex("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{10,50}$");
 
             // Get existing users with requested username. Use parameters to combat sql injection!
@@ -60,10 +60,10 @@ namespace Back_End.Controllers
 
         [HttpPost]
         [Route("Login")]
-        public ActionResult Login(User User)
+        public IActionResult Login(User User)
         {
             // Get existing users with requested username & password. Use parameters to combat sql injection!
-            List<User> ExistingUsers = _context.Users.FromSql($"SELECT * FROM Users WHERE Username = {@User.Username} AND Password = {User.Password};").ToList();
+            List<User> ExistingUsers = _context.Users.FromSql($"SELECT * FROM Users WHERE Username = {@User.Username} AND Password = {@User.Password};").ToList();
 
             if (User.Username.IsNullOrEmpty() || User.Password.IsNullOrEmpty())
             {
@@ -75,16 +75,16 @@ namespace Back_End.Controllers
             }
 
             // Generate a Json web token and return it
-            string Token = JsonWebTokenService.GenerateTokenUser(User, _configuration);
+            string Token = JsonWebTokenService.GenerateToken(User, _configuration);
 
             return StatusCode(StatusCodes.Status200OK, Token);
         }
 
-        // Delete all data related to user before the deletion from Users table or you'll get errors related to keys!
         [HttpDelete, Authorize]
-        [Route("Delete")]
-        public async Task<ActionResult> DeleteUserAndData(string unique_name)
+        [Route("Delete/{unique_name}")]
+        public async Task<IActionResult> DeleteUserAndData(string unique_name)
         {
+            // TO DO: Verify token name = username to be deleted!!!!!!!!!
             // Get existing users with requested username. Use parameters to combat sql injection!
             List<User> Users = _context.Users.FromSql($"SELECT * FROM USERS WHERE Username = {unique_name}").ToList();
 
@@ -134,7 +134,7 @@ namespace Back_End.Controllers
 
         // Edit user
         [HttpPut, Authorize(Roles = "User")]
-        [Route("Edit/{UserId}")]
+        [Route("Edit/{unique_name}")]
         public async Task<IActionResult> EditUser(int UserId, User User)
         {
             if (User == null || UserId != User.UserId)

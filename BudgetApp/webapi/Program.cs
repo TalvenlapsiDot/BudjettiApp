@@ -18,7 +18,7 @@ builder.Services.AddAuthentication(options =>
     options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
 }).AddJwtBearer(options =>
 {
-    options.IncludeErrorDetails = true; // Always include this or you will end up suicidal
+    options.IncludeErrorDetails = true;
     options.TokenValidationParameters = new TokenValidationParameters()
     {
         ValidIssuer = config["Jwt:Issuer"],

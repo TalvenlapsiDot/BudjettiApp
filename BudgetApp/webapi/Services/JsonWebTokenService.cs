@@ -8,8 +8,7 @@ namespace Back_End.Services
 {
     public class JsonWebTokenService
     {
-        // Needs improvements, but this will do for now
-        public static string GenerateTokenUser(User User, IConfiguration _configuration)
+        public static string GenerateToken(User User, IConfiguration _configuration)
         {
             JwtSecurityTokenHandler Handler = new JwtSecurityTokenHandler();
 
