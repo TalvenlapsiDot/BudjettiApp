@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
 using System.Text.RegularExpressions;
 
 // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
@@ -84,16 +85,20 @@ namespace Back_End.Controllers
         [Route("Delete/{unique_name}")]
         public async Task<IActionResult> DeleteUserAndData(string unique_name)
         {
-            // TO DO: Verify token name = username to be deleted!!!!!!!!!
+            // Read unique_name on the jwt and compare it against requested name
+            string ClaimName = JsonWebTokenService.GetUniqueName(Request, _configuration);
             // Get existing users with requested username. Use parameters to combat sql injection!
             List<User> Users = _context.Users.FromSql($"SELECT * FROM USERS WHERE Username = {unique_name}").ToList();
+            User User = Users[0];
 
             if (Users.Count() <= 0)
             {
                 return StatusCode(StatusCodes.Status404NotFound, "User not found!");
             }
-
-            User User = Users[0];
+            else if (ClaimName != User.Username)
+            {
+                return StatusCode(StatusCodes.Status403Forbidden, "Token name and unique_name mismatch!");
+            }
 
             // Delete budget data
             var ExistingBudgets = from b in _context.Budgets
