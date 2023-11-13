@@ -16,12 +16,12 @@ namespace Back_End.Controllers
 {
     [Route("API/[controller]")]
     [ApiController]
-    public class LoginAndRegisterationController : ControllerBase
+    public class UserManagementController : ControllerBase
     {
         private readonly BudgetAppDbContext _context;
         private readonly IConfiguration _configuration;
 
-        public LoginAndRegisterationController(BudgetAppDbContext context, IConfiguration configuration)
+        public UserManagementController(BudgetAppDbContext context, IConfiguration configuration)
         {
             _context = context;
             _configuration = configuration;
@@ -81,6 +81,16 @@ namespace Back_End.Controllers
             return StatusCode(StatusCodes.Status200OK, Token);
         }
 
+        // Logout
+        [HttpPost, Authorize]
+        [Route("Logout/{unique_name}")]
+        public async Task<IActionResult> LogOut(string unique_name)
+        {
+
+
+            return StatusCode(StatusCodes.Status418ImATeapot, "Not ready yet :(");
+        }
+
         [HttpDelete, Authorize]
         [Route("Delete/{unique_name}")]
         public async Task<IActionResult> DeleteUserAndData(string unique_name)
@@ -134,7 +144,7 @@ namespace Back_End.Controllers
             _context.Users.Remove(User);
             await _context.SaveChangesAsync();
 
-            return StatusCode(StatusCodes.Status200OK, "Deleted succesfully!");
+            return StatusCode(StatusCodes.Status200OK, $"Deleted user {unique_name} succesfully!");
         }
 
         // Edit user
