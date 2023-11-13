@@ -41,22 +41,28 @@ namespace Back_End.Controllers
 
             if (User.Username.IsNullOrEmpty() || User.Password.IsNullOrEmpty())
             {
-                return StatusCode(StatusCodes.Status204NoContent, "Empty request!");
+                return StatusCode(StatusCodes.Status204NoContent, "Empty fields!");
             }
             else if (!UsernameRules.IsMatch(User.Username) || !PasswordRules.IsMatch(User.Password))
             {
-                return StatusCode(StatusCodes.Status406NotAcceptable, "Regex error!");
+                return StatusCode(StatusCodes.Status406NotAcceptable, "Regex error. Check the rules!");
             }
             else if (ExistingUsers.Count() > 0)
             {
-                return StatusCode(StatusCodes.Status409Conflict, "User already exists");
+                return StatusCode(StatusCodes.Status409Conflict, "User already exists!");
             }
 
-            // Add user to DB
-            _context.Database.ExecuteSqlRaw($"INSERT INTO Users VALUES ('{@User.Username}', '{@User.Password}');");
-            await _context.SaveChangesAsync();
+            try
+            {
+                _context.Database.ExecuteSqlRaw($"INSERT INTO Users VALUES ('{@User.Username}', '{@User.Password}');");
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
 
-            return StatusCode(StatusCodes.Status201Created, "User creation succesful!");
+            return StatusCode(StatusCodes.Status201Created, $"User {User.Username} creation succesful!");
         }
 
         [HttpPost]
@@ -68,14 +74,14 @@ namespace Back_End.Controllers
 
             if (User.Username.IsNullOrEmpty() || User.Password.IsNullOrEmpty())
             {
-                return StatusCode(StatusCodes.Status204NoContent, "Empty request!");
+                return StatusCode(StatusCodes.Status204NoContent, "Empty fields!");
             }
             else if (ExistingUsers.Count() <= 0)
             {
                 return StatusCode(StatusCodes.Status404NotFound, "User not found!");
             }
 
-            // Generate a Json web token and return it
+            // Generate a Jwt
             string Token = JsonWebTokenService.GenerateToken(User, _configuration);
 
             return StatusCode(StatusCodes.Status200OK, Token);
@@ -83,32 +89,29 @@ namespace Back_End.Controllers
 
         // Logout
         [HttpPost, Authorize]
-        [Route("Logout/{unique_name}")]
-        public async Task<IActionResult> LogOut(string unique_name)
+        [Route("Logout")]
+        public async Task<IActionResult> LogOut()
         {
+            // Use tokens name claim to acquire users data
 
 
             return StatusCode(StatusCodes.Status418ImATeapot, "Not ready yet :(");
         }
 
         [HttpDelete, Authorize]
-        [Route("Delete/{unique_name}")]
-        public async Task<IActionResult> DeleteUserAndData(string unique_name)
+        [Route("Delete")]
+        public async Task<IActionResult> DeleteUserAndData()
         {
-            // Read unique_name on the jwt and compare it against requested name
+            // Use tokens name claim to acquire users data
             string ClaimName = JsonWebTokenService.GetUniqueName(Request, _configuration);
-            // Get existing users with requested username. Use parameters to combat sql injection!
-            List<User> Users = _context.Users.FromSql($"SELECT * FROM USERS WHERE Username = {unique_name}").ToList();
-            User User = Users[0];
+            List<User> Users = _context.Users.FromSql($"SELECT * FROM USERS WHERE Username = {ClaimName}").ToList();
 
             if (Users.Count() <= 0)
             {
                 return StatusCode(StatusCodes.Status404NotFound, "User not found!");
             }
-            else if (ClaimName != User.Username)
-            {
-                return StatusCode(StatusCodes.Status403Forbidden, "Token name and unique_name mismatch!");
-            }
+
+            User User = Users[0];
 
             // Delete budget data
             var ExistingBudgets = from b in _context.Budgets
@@ -140,35 +143,60 @@ namespace Back_End.Controllers
                 _context.Expenditures.Remove(e);
             }
 
-            // Delete user & save changes
-            _context.Users.Remove(User);
-            await _context.SaveChangesAsync();
-
-            return StatusCode(StatusCodes.Status200OK, $"Deleted user {unique_name} succesfully!");
-        }
-
-        // Edit user
-        [HttpPut, Authorize(Roles = "User")]
-        [Route("Edit/{unique_name}")]
-        public async Task<IActionResult> EditUser(int UserId, User User)
-        {
-            if (User == null || UserId != User.UserId)
+            // Delete user
+            try
             {
-                return BadRequest();
+                _context.Users.Remove(User);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
 
-            _context.Entry(User).State = EntityState.Modified;
+            // Need invalidate token function here!
+
+            return StatusCode(StatusCodes.Status200OK, $"Deleted user {ClaimName} succesfully!");
+        }
+
+        [HttpPut, Authorize]
+        [Route("Edit")]
+        public async Task<IActionResult> EditUser(User User)
+        {
+            // Use tokens name claim to acquire users data
+            string ClaimName = JsonWebTokenService.GetUniqueName(Request, _configuration);
+            List<User> Users = _context.Users.FromSql($"SELECT * FROM USERS WHERE Username = {ClaimName}").ToList();
+            List<User> Usernames = _context.Users.FromSql($"SELECT * FROM Users WHERE Username = {User.Username};").ToList();
+
+            if (Users.Count() <= 0) // Check if token claim name exists
+            {
+                return StatusCode(StatusCodes.Status404NotFound, "Token error. Name claim not found!");
+            }
+            else if (Usernames.Count() > 0) // Check if requested new username exists
+            {
+                return StatusCode(StatusCodes.Status403Forbidden, "Username already exists!");
+            }
+
+            User EditedUser = new User
+            {
+                UserId = Users[0].UserId,
+                Username = User.Username,
+                Password = User.Password
+            };
 
             try
             {
+                await _context.Database.ExecuteSqlRawAsync($"UPDATE Users SET Username = '{EditedUser.Username}', Password = '{EditedUser.Password}' WHERE UserID = {EditedUser.UserId}");
                 await _context.SaveChangesAsync();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return BadRequest();
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
 
-            return Ok("Succesful");
+            // Need token refresh function here!
+
+            return StatusCode(StatusCodes.Status200OK, "-> JWT here <-");
         }
 
     }

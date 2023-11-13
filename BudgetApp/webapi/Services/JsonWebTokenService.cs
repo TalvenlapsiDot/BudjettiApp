@@ -27,8 +27,8 @@ namespace Back_End.Services
             {
                 Subject = new ClaimsIdentity(Claims),
                 Expires = DateTime.UtcNow.Add(Hours),
-                Issuer = "https://localhost:7123/", // Invalid?
-                Audience = "https://localhost:7123/", // Invalid?
+                Issuer = _configuration.GetSection("Jwt:Issuer").Value!, // Invalid?
+                Audience = _configuration.GetSection("Jwt:Audience").Value!, // Invalid?
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(Key), SecurityAlgorithms.HmacSha256Signature)
             };
 
@@ -49,8 +49,7 @@ namespace Back_End.Services
             }
             else if (Token.Contains("Bearer"))
             {
-                int Index = Token.IndexOf(" ") + 1;
-                Token = Token.Substring(Index);
+                Token = Token.Substring(Token.IndexOf(" ") + 1);
             }
 
             var JwtResults = new JwtSecurityTokenHandler().ReadJwtToken(Token);
