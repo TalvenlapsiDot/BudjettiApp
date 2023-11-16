@@ -2,6 +2,7 @@ import {Box, Button, Container, Flex, Divider, Tabs, TabList, TabPanels, Tab, Ta
 import { useState } from 'react';
 /* Remember to import useState you dingus I know you'll forget it in future TALVI.
 So when you come to debug it THIS IS WHY IT DOESN'T WORK. */
+import './styles.css'
 import Login from './components/Login';
 import Income from './components/Income';
 

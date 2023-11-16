@@ -1,40 +1,90 @@
 import { useState, useCallback } from 'react'
-import {Box, Button, Container, Flex, Heading, Input, List, ListItem, ListIcon, OrderedList, UnorderedList, } from '@chakra-ui/react'
+import {Box, Button, Container, Flex, Input, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody,
+    ModalCloseButton, Table, Thead, Tbody, Tfoot, Tr, Th, Td, TableCaption, TableContainer, useToast, useDisclosure} from '@chakra-ui/react'
 
 const Income = () => {
+
+  const { isOpen, onOpen, onClose } = useDisclosure()
+  const toast = useToast();
 
   return (
     //Maybe Card instead of Container
     //https://chakra-ui.com/docs/components/card
-    // and maybe Table instead of list
-    // https://chakra-ui.com/docs/components/table
     <>
-    <Container bg='gray.500' borderRadius='25' centerContent>
-        <Heading>Text</Heading>
-        <UnorderedList>
-            <ListItem>Lorem ipsum dolor sit amet</ListItem>
-            <ListItem>Consectetur adipiscing elit</ListItem>
-            <ListItem>Integer molestie lorem at massa</ListItem>
-            <ListItem>Facilisis in pretium nisl aliquet</ListItem>
-        </UnorderedList>
-     </Container>
-    < Input
-         width="40%"
-         bottom='-400'
-         left=''
-         size='md'
-         placeholder='Income Source'/>
-    < Input
-         width="40%"
-         bottom='-400'
-         left='1'
-         size='md'
-         placeholder='Amount'/>
-      <Button
-         bottom='-397'
-         left='2'
+    <Box bg='gray.500' borderRadius='25' width='85%' height='600'>
+    <Button
+         left='550'
          variant='ghost'
-         backgroundColor='teal.200'> Add Income</Button>
+         size='sm'
+         backgroundColor='teal.200'
+         onClick={onOpen}> Add Income</Button>
+        <TableContainer>
+    <Table size='sm'>
+    <Thead>
+      <Tr>
+        <Th>Source</Th>
+        <Th>Amount</Th>
+      </Tr>
+    </Thead>
+    <Tbody>
+      <Tr>
+        <Td>Work</Td>
+        <Td>234</Td>
+      </Tr>
+      <Tr>
+        <Td>Sales</Td>
+        <Td>54222</Td>
+      </Tr>
+      <Tr>
+        <Td>Rent</Td>
+        <Td>546</Td>
+      </Tr>
+    </Tbody>
+  </Table>
+</TableContainer>
+
+            <Modal
+                isOpen={isOpen} onClose={onClose} isCentered
+                p="5"
+                borderRadius="25"
+                boxShadow="xl"
+                zIndex="1"
+            >
+            <ModalOverlay
+            bg='blackAlpha.400'
+            backdropFilter='blur(2px)'/>
+            <ModalContent>
+                <ModalHeader>Add Income</ModalHeader>
+                <ModalCloseButton/>
+                <ModalBody>
+            < Input
+                width="100%"
+                top='5'
+                size='sm'
+                placeholder='Source'/>
+            < Input
+                width="100%"
+                top='21'
+                size='sm'
+                placeholder='Amount'/>
+            </ModalBody>
+            <Button
+                top='30px'
+                variant='ghost'
+                backgroundColor='teal.200'
+                //Turn this into promise-based later
+                // https://chakra-ui.com/docs/components/toast
+                onClick={() => toast({
+                    title: 'Added',
+                    description: 'Successfully added income',
+                    status: 'success',
+                    duration: 2000,
+                    isClosable: true,
+                })}
+                > Add </Button>
+                </ModalContent>
+            </Modal>
+     </Box>
     </>
   )
 }

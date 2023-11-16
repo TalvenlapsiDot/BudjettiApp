@@ -21,7 +21,7 @@ const Login = () => {
         { !login &&
             <Box
                 pos='relative'
-                bottom='200'
+                bottom='700'
                 w="400px"
                 h="300px"
                 bg="gray.700"
@@ -59,9 +59,9 @@ const Login = () => {
             <Button
                 variant='ghost'
                 backgroundColor='teal.200'
-                size='sm'
-                left='280'
-                bottom='520'
+                size='xs'
+                left='300'
+                bottom='930'
                 rightIcon={<ArrowRightIcon />}
                 onClick={() => logUserIn(false)}> Log Out</Button>
         }
