@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using Back_End.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace Back_End.Models;
+namespace Back_End.Models.Context;
 
 public partial class BudgetAppDbContext : DbContext
 {
@@ -41,10 +42,10 @@ public partial class BudgetAppDbContext : DbContext
             entity.Property(e => e.StartDate).HasColumnType("datetime");
             entity.Property(e => e.UserId).HasColumnName("UserID");
 
-            entity.HasOne(d => d.User).WithMany(p => p.Budgets)
-                .HasForeignKey(d => d.UserId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Budget__UserID__628FA481");
+            //entity.HasOne(d => d.User).WithMany(p => p.Budgets)
+            //    .HasForeignKey(d => d.UserId)
+            //    .OnDelete(DeleteBehavior.ClientSetNull)
+            //    .HasConstraintName("FK__Budget__UserID__628FA481");
         });
 
         modelBuilder.Entity<Category>(entity =>
