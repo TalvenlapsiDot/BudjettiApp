@@ -24,8 +24,8 @@ builder.Services.AddAuthentication(options =>
         ValidIssuer = config["Jwt:Issuer"],
         ValidAudience = config["Jwt:Audience"],
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["Jwt:Secret"]!)),
-        ValidateIssuer = false, // Check in on these later, keeps claiming issuer & audience are invalid????
-        ValidateAudience = false,
+        ValidateIssuer = true, // Check in on these later, keeps claiming issuer & audience are invalid????
+        ValidateAudience = true,
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true
 

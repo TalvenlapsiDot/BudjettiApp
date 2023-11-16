@@ -82,8 +82,8 @@ namespace Back_End.Services
             TokenValidationParameters ValidationParameters = new TokenValidationParameters
             {
                 ValidateLifetime = true,
-                ValidateAudience = false,
-                ValidateIssuer = false,
+                ValidateAudience = true,
+                ValidateIssuer = true,
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Secret"]!)),
             };
 
