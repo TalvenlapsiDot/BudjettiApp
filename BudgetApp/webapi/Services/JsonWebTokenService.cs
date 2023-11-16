@@ -47,7 +47,7 @@ namespace Back_End.Services
             {
                 return "Request.Headers[\"Authorization\"] was empty or null!";
             }
-            else if (Token.Contains("Bearer"))
+            else if (Token.ToUpper().Contains("BEARER"))
             {
                 Token = Token.Substring(Token.IndexOf(" ") + 1);
             }

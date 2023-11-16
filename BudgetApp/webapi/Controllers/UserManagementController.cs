@@ -1,13 +1,10 @@
-﻿using Back_End.Context;
-using Back_End.Models;
+﻿using Back_End.Models;
+using Back_End.Models.Context;
 using Back_End.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Connections.Features;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
 using System.Text.RegularExpressions;
 
 // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
@@ -27,15 +24,15 @@ namespace Back_End.Controllers
             _configuration = configuration;
         }
 
+        // Min length 5, max length 25, only allow -_ special characters
+        private readonly Regex UsernameRules = new Regex(@"^[a-zA-Z0-9_-]{5,25}$");
+        // Min length 10, max length 50, contains atleast one digit, upper & lowercase character
+        private readonly Regex PasswordRules = new Regex("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{10,50}$");
+
         [HttpPost]
         [Route("Register")]
         public async Task<IActionResult> RegisterUser(User User)
         {
-            // Min length 5, max length 25, only allow -_ special characters
-            Regex UsernameRules = new Regex(@"^[a-zA-Z0-9_-]{5,25}$");
-            // Min length 10, max length 50, contains atleast one digit, upper & lowercase character
-            Regex PasswordRules = new Regex("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{10,50}$");
-
             // Get existing users with requested username. Use parameters to combat sql injection!
             List<User> ExistingUsers = _context.Users.FromSql($"SELECT * FROM Users WHERE Username = {@User.Username};").ToList();
 
@@ -90,6 +87,7 @@ namespace Back_End.Controllers
         // Logout
         [HttpPost, Authorize]
         [Route("Logout")]
+        #pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
         public async Task<IActionResult> LogOut()
         {
             // Use tokens name claim to acquire users data
@@ -102,7 +100,7 @@ namespace Back_End.Controllers
         [Route("Delete")]
         public async Task<IActionResult> DeleteUserAndData()
         {
-            // Use tokens name claim to acquire users data
+            // Use tokens name claim to query users data
             string ClaimName = JsonWebTokenService.GetUniqueName(Request, _configuration);
             List<User> Users = _context.Users.FromSql($"SELECT * FROM USERS WHERE Username = {ClaimName}").ToList();
 
@@ -176,6 +174,10 @@ namespace Back_End.Controllers
             {
                 return StatusCode(StatusCodes.Status403Forbidden, "Username already exists!");
             }
+            else if (!UsernameRules.IsMatch(User.Username) || !PasswordRules.IsMatch(User.Password)) // Check regex
+            {
+                return StatusCode(StatusCodes.Status406NotAcceptable, "Regex error. Check the rules!");
+            }
 
             User EditedUser = new User
             {
@@ -194,9 +196,9 @@ namespace Back_End.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
 
-            // Need token refresh function here!
+            string Token = JsonWebTokenService.GenerateToken(EditedUser, _configuration);
 
-            return StatusCode(StatusCodes.Status200OK, "-> JWT here <-");
+            return StatusCode(StatusCodes.Status200OK, Token);
         }
 
     }

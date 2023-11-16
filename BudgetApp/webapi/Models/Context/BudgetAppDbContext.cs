@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Back_End.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace Back_End.Context;
+namespace Back_End.Models.Context;
 
 public partial class BudgetAppDbContext : DbContext
 {
