@@ -133,5 +133,4 @@ project.lock.json
 
 # Kubernetes
 .kube
-
-appsettings.json
+/BudgetApp/webapi/appsettings.json
