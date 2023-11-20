@@ -14,8 +14,19 @@ const App = () => {
     /* React usestate hook to change the status of login or whatever when it's called also translate to Finnish someday*/
     const [authenticated, setAuthenticated] = useState(false);
 
-    const handleRegistration = () => {
+    const handleRegistration = async () => {
       // do registration thing in API!
+      // Fetch request sent to the API url
+      const apiResponse = await fetch("https://example.com", {
+        credentials: "include",
+      });
+      // waits till API responds and brings on json data yay?
+      const registrationData = await apiResponse.json();
+
+      console.log(registrationData, 'to object with', JSON.parse(registrationData));
+
+      //Turn this into promise-based later
+      // https://chakra-ui.com/docs/components/toast
       toast({
           title: 'Registering.',
           description: 'Registering user',

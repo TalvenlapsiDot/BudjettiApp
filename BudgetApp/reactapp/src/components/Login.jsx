@@ -17,8 +17,10 @@ const Login = ({onLogin}) => {
             width="100%"
             size='sm'
             placeholder='Password'
+            type='password'
             value={passWord}
-            onChange={(b) => setUserPassword(b.target.value)} /><Button
+            onChange={(b) => setUserPassword(b.target.value)} />
+        <Button
             width="100%"
             variant='ghost'
             backgroundColor='teal.200'
