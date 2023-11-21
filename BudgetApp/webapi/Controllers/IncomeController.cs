@@ -89,16 +89,16 @@ namespace Back_End.Controllers
 		}
 
 		//Find Income with id and Update
-		[HttpPut("{id}")]
+		[HttpPut("incomeid{id}")]
 		public ActionResult EditIncome(int id, [FromBody] Income incs)
 		{
-			var inc = db.Incomes.Find(id);
-			if (inc != null)
+			var Income= db.Incomes.Find(id);
+			if (Income != null)
 			{
-				inc.UserId = incs.UserId;
-				inc.CategoryId = incs.CategoryId;
-				inc.IncomeDate= incs.IncomeDate;
-				inc.IncomeAmount = incs.IncomeAmount;
+				Income.UserId = incs.UserId;
+				Income.CategoryId = incs.CategoryId;
+				Income.IncomeAmount = incs.IncomeAmount;
+				Income.IncomeID = incs.IncomeID;
 
 				db.SaveChanges();
 				return Ok("Updated Income ");
@@ -108,19 +108,18 @@ namespace Back_End.Controllers
 				return NotFound("Cannot find Income with the user id of " + id);
 			}
 		}
-		//Delete income
-		[HttpDelete("{id}")]
-		public ActionResult Delete(int id)
+		[HttpDelete("incomeid{id}")]
+		public ActionResult Delete(int id, [FromBody] Income incs)
 		{
 			try
 			{
-				var inc= db.Incomes.Find(id);
+				var inc = db.Incomes.Where(c => c.IncomeID.Contains(incs));
 
 				if (inc != null)
 				{
 					db.Incomes.Remove(inc);
 					db.SaveChanges();
-					return Ok("Removed income");
+					return Ok("Asiakas poistettiin.");
 				}
 				else
 				{

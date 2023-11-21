@@ -12,6 +12,7 @@ public partial class Expenditure
     public DateTime ExpenditureDate { get; set; }
 
     public double ExpenditureAmount { get; set; }
+    public int ExpenditureID { get; set; }
 
     public virtual Category? Category { get; set; }
 
