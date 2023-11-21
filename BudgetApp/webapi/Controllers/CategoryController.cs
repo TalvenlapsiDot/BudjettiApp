@@ -101,9 +101,9 @@ namespace Back_End.Controllers
 			}
 		}
 
-		//Get/Find by catefory name
-		[HttpGet("categoryname/{cname}")]
-		public ActionResult GetByName(string cname)
+		//Get/Find by category name
+		[HttpGet("categoryname/{canme}")]
+		public ActionResult GetByCategoryName(string cname)
 		{
 			try
 			{

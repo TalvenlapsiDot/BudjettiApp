@@ -9,6 +9,8 @@ public partial class Income
 
     public int? CategoryId { get; set; }
 
+    public int IncomeID { get; set; }
+
     public DateTime IncomeDate { get; set; }
 
     public double IncomeAmount { get; set; }
