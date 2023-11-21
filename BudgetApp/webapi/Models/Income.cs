@@ -15,7 +15,7 @@ public partial class Income
 
     public double IncomeAmount { get; set; }
 
-    public virtual Category? Category { get; set; }
+    //public virtual Category? Category { get; set; }
 
-    public virtual User User { get; set; } = null!;
+    //public virtual User User { get; set; } = null!;
 }
