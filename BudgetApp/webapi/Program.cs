@@ -11,6 +11,15 @@ var config = builder.Configuration;
 // Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddDbContext<BudgetAppDbContext>();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("CorsPolicy", cors =>
+    {
+        cors.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin();
+        // To configure cors for set domains do the following:
+        // change AllowAnyOrigin() to .WithOrigins("http://YourDomain/", "http://SomeOtherDomain/");
+    });
+});
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -55,6 +64,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseCors("CorsPolicy");
 
 app.UseHttpsRedirection();
 
