@@ -37,63 +37,40 @@ const App = () => {
     }
 
     const handleLogin = async(userName, passWord) => {
-        const loginResponse = await fetch("https://localhost:5173//API/UserManagement/Login/", {
-      method: "POST",
-      headers: {
-        "Accept": "application/json",
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        userid: 0,
-        username: userName,
-        password: passWord,
-      }
-      ),
-      })
-      .then((loginResponse) => loginResponse.json())
-      .then((result => {
-        if (result.message === "SUCCESS") {
-          toast({
-            title: 'Logging in',
-            description: 'Logging in successfull',
-            status: 'success',
-            duration: 2000,
-            isClosable: true,
-        })
-        setAuthenticated(true)
-        } else {
-          toast({
-            title: 'Error',
-            description: 'Something went wrong',
-            status: 'error',
-            duration: 2000,
-            isClosable: true,
-        })
-        setAuthenticated(false)
-        }
-        return loginResponse.json()
-      }))
+     await fetch("https://localhost:7123/API/UserManagement/Login/", {
+    method: "POST",
+    headers: {
+      "Accept": "application/json",
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      userid: 0,
+      username: userName,
+      password: passWord,
     }
-
-
-
-    /*const handleSubmit = useCallback((userName, passWord) => {
-      //Turn this into promise-based later
-      // https://chakra-ui.com/docs/components/toast
-      toast({
-          title: 'Logged in.',
-          description: 'Logging in',
+    ),
+    })
+    .then((response) => {
+      if (!response.ok) {
+        toast({
+          title: 'Error',
+          description: 'Something went wrong',
+          status: 'error',
+          duration: 2000,
+          isClosable: true,
+      })
+      } else {
+        toast({
+          title: 'Logging in',
+          description: 'Logging in successfull',
           status: 'success',
           duration: 2000,
           isClosable: true,
       })
-
-      if ( passWord !== '1234' || userName !== 'Talvi') {
-        setAuthenticated(false)
-      } else {
-        setAuthenticated(true)
+      setAuthenticated(true)
       }
-    }, [toast]);*/
+    })
+  }
 
     return (
         /* Insert here about why the Flex works, tldr direction gives vertical/horizontal
