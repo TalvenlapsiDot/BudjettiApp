@@ -14,8 +14,19 @@ const App = () => {
     /* React usestate hook to change the status of login or whatever when it's called also translate to Finnish someday*/
     const [authenticated, setAuthenticated] = useState(false);
 
-    const handleRegistration = () => {
+    const handleRegistration = async () => {
       // do registration thing in API!
+      // Fetch request sent to the API url
+      const apiResponse = await fetch("https://example.com", {
+        credentials: "include",
+      });
+      // waits till API responds and brings on json data yay?
+      const registrationData = await apiResponse.json();
+
+      console.log(registrationData, 'to object with', JSON.parse(registrationData));
+
+      //Turn this into promise-based later
+      // https://chakra-ui.com/docs/components/toast
       toast({
           title: 'Registering.',
           description: 'Registering user',
@@ -25,23 +36,41 @@ const App = () => {
       })
     }
 
-    const handleSubmit = useCallback((userName, passWord) => {
-      //Turn this into promise-based later
-      // https://chakra-ui.com/docs/components/toast
-      toast({
-          title: 'Logged in.',
-          description: 'Logging in',
+    const handleLogin = async(userName, passWord) => {
+     await fetch("https://localhost:7123/API/UserManagement/Login/", {
+    method: "POST",
+    headers: {
+      "Accept": "application/json",
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      userid: 0,
+      username: userName,
+      password: passWord,
+    }
+    ),
+    })
+    .then((response) => {
+      if (!response.ok) {
+        toast({
+          title: 'Error',
+          description: 'Something went wrong',
+          status: 'error',
+          duration: 2000,
+          isClosable: true,
+      })
+      } else {
+        toast({
+          title: 'Logging in',
+          description: 'Logging in successfull',
           status: 'success',
           duration: 2000,
           isClosable: true,
       })
-
-      if ( passWord !== '1234' || userName !== 'Talvi') {
-        setAuthenticated(false)
-      } else {
-        setAuthenticated(true)
+      setAuthenticated(true)
       }
-    }, [toast]);
+    })
+  }
 
     return (
         /* Insert here about why the Flex works, tldr direction gives vertical/horizontal
@@ -79,7 +108,7 @@ const App = () => {
               </TabPanel>
             </TabPanels>
           </Tabs>
-          <Auth open={!authenticated} onLogin={handleSubmit} onRegister={handleRegistration} />
+          <Auth open={!authenticated} onLogin={handleLogin} onRegister={handleRegistration} />
           <Button
                 variant='ghost'
                 backgroundColor='teal.200'
