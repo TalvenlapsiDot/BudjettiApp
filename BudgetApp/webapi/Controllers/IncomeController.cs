@@ -41,19 +41,38 @@ namespace Back_End.Controllers
 		}
 
 		//Add income
-		[HttpPost]
-		public ActionResult AddNew([FromBody]  Income inc)
+		[HttpPost, Authorize]
+		[Route("AddIncome")]
+		public async Task<IActionResult> AddIncome(Income Income)
 		{
+			string ClaimName = JsonWebTokenService.GetUniqueName(Request, _configuration);
+			List<User> Users = db.Users.FromSql($"SELECT * FROM USERS WHERE Username = {ClaimName}").ToList();
+
+			User User = new User
+			{
+				UserId = Users[0].UserId,
+				Username = Users[0].Username,
+				Password = Users[0].Password
+			};
+
+
+			if (User.UserId != Income.UserId)
+			{
+				return StatusCode(StatusCodes.Status401Unauthorized, "Unauthorized. UserID mismatch!");
+			}
 			try
 			{
-				db.Incomes.Add(inc);
-				db.SaveChanges();
-				return Ok("Added new income");
+				string sqlFormattedDate = Income.IncomeDate.Date.ToString("s") + ".000Z";
+
+				await db.Database.ExecuteSqlAsync($"INSERT INTO Income VALUES UserID = {@Income.UserId}, CategoryID = {@Income.CategoryId}, IncomeDate = {@sqlFormattedDate}, IncomeAmount = {@Income.IncomeAmount}");
+				await db.SaveChangesAsync();
 			}
-			catch (Exception ex)
+			catch (Exception e)
 			{
-				return BadRequest(ex.InnerException);
+				return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
 			}
+
+			return StatusCode(StatusCodes.Status200OK, ("Income Added successfully!"));
 		}
 
 
@@ -171,7 +190,7 @@ namespace Back_End.Controllers
 			try
 			{
 				
-				await db.Database.ExecuteSqlAsync($"DELETE FROM Income WHERE IncomeID = {Income.IncomeID}");
+				await db.Database.ExecuteSqlAsync($"DELETE FROM Income WHERE IncomeID = {@Income.IncomeID}");
 				await db.SaveChangesAsync();
 			}
 			catch (Exception e)
