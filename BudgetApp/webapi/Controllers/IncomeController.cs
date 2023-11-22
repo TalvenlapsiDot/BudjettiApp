@@ -64,7 +64,7 @@ namespace Back_End.Controllers
 			{
 				string sqlFormattedDate = Income.IncomeDate.Date.ToString("s") + ".000Z";
 
-				await db.Database.ExecuteSqlAsync($"INSERT INTO Income VALUES UserID = {@Income.UserId}, CategoryID = {@Income.CategoryId}, IncomeDate = {@sqlFormattedDate}, IncomeAmount = {@Income.IncomeAmount}");
+                await db.Database.ExecuteSqlAsync($"INSERT INTO Income (UserID, CategoryID, IncomeDate, IncomeAmount) VALUES ({Income.UserId}, {Income.CategoryId}, {@sqlFormattedDate}, {@Income.IncomeAmount});");
 				await db.SaveChangesAsync();
 			}
 			catch (Exception e)
