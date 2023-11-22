@@ -147,52 +147,44 @@ namespace Back_End.Controllers
 
 
 
-        //Find Income with id and Update
-        [HttpPut("incomeid{id}")]
-		public ActionResult EditIncome1(int id, [FromBody] Income incs)
-		{
-			var Income= db.Incomes.Find(id);
-			if (Income != null)
-			{
-				Income.UserId = incs.UserId;
-				Income.CategoryId = incs.CategoryId;
-				Income.IncomeAmount = incs.IncomeAmount;
-				Income.IncomeID = incs.IncomeID;
+       
 
-				db.SaveChanges();
-				return Ok("Updated Income ");
-			}
-			else
-			{
-				return NotFound("Cannot find Income with the user id of " + id);
-			}
-		}
-
-		[HttpDelete("incomeid{id}")]
-		public ActionResult Delete(int id, [FromBody] Income incs)
+		[HttpDelete, Authorize]
+		[Route("DeleteIncome")]
+		public async Task<IActionResult> DeleteIncome(Income Income)
 		{
+			string ClaimName = JsonWebTokenService.GetUniqueName(Request, _configuration);
+			List<User> Users = db.Users.FromSql($"SELECT * FROM USERS WHERE Username = {ClaimName}").ToList();
+
+			User User = new User
+			{
+				UserId = Users[0].UserId,
+				Username = Users[0].Username,
+				Password = Users[0].Password
+			};
+
+
+			if (User.UserId != Income.UserId)
+			{
+				return StatusCode(StatusCodes.Status401Unauthorized, "Unauthorized. UserID mismatch!");
+			}
 			try
 			{
-				//var inc = db.Incomes.Where(c => c.IncomeID.Contains(incs));
-
-				//if (inc != null)
-				//{
-				//	db.Incomes.Remove(inc);
-				//	db.SaveChanges();
-				//	return Ok("Asiakas poistettiin.");
-				//}
-				//else
-				//{
-				//	return NotFound();
-				//}
+				
+				await db.Database.ExecuteSqlAsync($"DELETE FROM Income WHERE IncomeID = {Income.IncomeID}");
+				await db.SaveChangesAsync();
 			}
-			catch (Exception ex)
+			catch (Exception e)
 			{
-				return BadRequest(ex.InnerException);
+				return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
 			}
 
-			return BadRequest();
+			return StatusCode(StatusCodes.Status200OK, ("Income deleted successfully!"));
 		}
+		
 
 	}
-}
+		
+
+	}
+
