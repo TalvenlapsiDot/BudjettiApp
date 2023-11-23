@@ -25,7 +25,7 @@ namespace Back_End.Controllers
 			_configuration = configuration;
 		}
 
-		//Get all incomes
+		//Get all incomes, FIX TO GET ALL INCOMES BY USERID
 		[HttpGet]
 		public ActionResult GetAllIncomes()
 		{
