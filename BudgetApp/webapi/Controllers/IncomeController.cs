@@ -76,32 +76,11 @@ namespace Back_End.Controllers
 		}
 
 
-		////Get Incomes by user id
-		//[HttpGet]
-		//[Route("{id}")]
-		//public ActionResult GetIncomeByid(int id)
-		//{
-		//	try
-		//	{
-		//		Income inc = db.Incomes.Find(id);
-		//		if (inc != null)
-		//		{
-		//			return Ok(inc);
-		//		}
-		//		else
-		//		{
-		//			return NotFound("Cannot find income with user id of " + id);
-		//		}
-		//	}
-		//	catch (Exception ex)
-		//	{
-		//		return BadRequest(ex.InnerException);
-		//	}
-		//}
+		
 
-		//Get/Find by category name
+		//Get/Find by categoryid
 		[HttpGet("categoryid/{cid}")]
-		public ActionResult GetByName(int cid)
+		public ActionResult GetById(int cid)
 		{
 			try
 			{
