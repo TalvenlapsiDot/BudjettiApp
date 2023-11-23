@@ -26,12 +26,12 @@ namespace Back_End.Controllers
 		}
 
 		//Get all incomes, FIX TO GET ALL INCOMES BY USERID
-		[HttpGet]
-		public ActionResult GetAllIncomes()
+		[HttpGet("userid/{uid}")]
+		public ActionResult GetAllIncomes(int uid)
 		{
 			try
 			{
-				var inc= db.Incomes.ToList();
+				var inc = db.Incomes.Where(c => c.UserId == uid);
 				return Ok(inc);
 			}
 			catch (Exception ex)
@@ -76,28 +76,28 @@ namespace Back_End.Controllers
 		}
 
 
-		//Get Incomes by user id
-		[HttpGet]
-		[Route("{id}")]
-		public ActionResult GetIncomeByid(int id)
-		{
-			try
-			{
-				Income inc = db.Incomes.Find(id);
-				if (inc != null)
-				{
-					return Ok(inc);
-				}
-				else
-				{
-					return NotFound("Cannot find income with user id of " + id);
-				}
-			}
-			catch (Exception ex)
-			{
-				return BadRequest(ex.InnerException);
-			}
-		}
+		////Get Incomes by user id
+		//[HttpGet]
+		//[Route("{id}")]
+		//public ActionResult GetIncomeByid(int id)
+		//{
+		//	try
+		//	{
+		//		Income inc = db.Incomes.Find(id);
+		//		if (inc != null)
+		//		{
+		//			return Ok(inc);
+		//		}
+		//		else
+		//		{
+		//			return NotFound("Cannot find income with user id of " + id);
+		//		}
+		//	}
+		//	catch (Exception ex)
+		//	{
+		//		return BadRequest(ex.InnerException);
+		//	}
+		//}
 
 		//Get/Find by category name
 		[HttpGet("categoryid/{cid}")]
