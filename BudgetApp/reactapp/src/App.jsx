@@ -1,5 +1,5 @@
 import {Box, Button, Flex, Tabs, TabList, TabPanels, Tab, TabPanel, useToast} from '@chakra-ui/react'
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 /* Remember to import useState you dingus I know you'll forget it in future TALVI.
 So when you come to debug it THIS IS WHY IT DOESN'T WORK. */
 import {ArrowRightIcon} from '@chakra-ui/icons'
@@ -14,27 +14,41 @@ const App = () => {
     /* React usestate hook to change the status of login or whatever when it's called also translate to Finnish someday*/
     const [authenticated, setAuthenticated] = useState(false);
 
-    const handleRegistration = async () => {
-      // do registration thing in API!
-      // Fetch request sent to the API url
-      const apiResponse = await fetch("https://example.com", {
-        credentials: "include",
-      });
-      // waits till API responds and brings on json data yay?
-      const registrationData = await apiResponse.json();
-
-      console.log(registrationData, 'to object with', JSON.parse(registrationData));
-
-      //Turn this into promise-based later
-      // https://chakra-ui.com/docs/components/toast
-      toast({
-          title: 'Registering.',
-          description: 'Registering user',
-          status: 'success',
-          duration: 2000,
-          isClosable: true,
-      })
-    }
+    const handleRegistration = async(userName, passWord) => {
+      console.log(userName, passWord),
+      await fetch("https://localhost:7123/API/UserManagement/Register/", {
+     method: "POST",
+     headers: {
+       "Accept": "application/json",
+       "Content-Type": "application/json"
+     },
+     body: JSON.stringify({
+       userid: 0,
+       username: userName,
+       password: passWord,
+     }
+     ),
+     })
+     .then((response) => {
+       if (!response.ok) {
+         toast({
+           title: 'Error',
+           description: 'Something went wrong',
+           status: 'error',
+           duration: 2000,
+           isClosable: true,
+       })
+       } else {
+         toast({
+           title: 'Success',
+           description: 'Your account has been created, please login!',
+           status: 'success',
+           duration: 2000,
+           isClosable: true,
+       })
+       }
+     })
+   }
 
     const handleLogin = async(userName, passWord) => {
      await fetch("https://localhost:7123/API/UserManagement/Login/", {
