@@ -86,6 +86,7 @@ namespace Back_End.Controllers
             return StatusCode(StatusCodes.Status200OK, monthlySummary);
         }
 
+        // This needs optimization
         [HttpGet, Authorize]
         [Route("SummarizeThreeMonths")]
         public IActionResult SummarizeThreeMonths()
@@ -161,12 +162,67 @@ namespace Back_End.Controllers
         }
 
         [HttpGet, Authorize]
-        [Route("Summarize")]
-        public IActionResult Summarize()
+        [Route("SummarizeCurrentMonth")]
+        public IActionResult SummarizeCurrentMonth()
         {
+            // Read username from token nameclaim and get users data
+            string ClaimName = JsonWebTokenService.GetUniqueName(Request, _configuration);
+            List<User> UserList = _context.Users.FromSql($"SELECT * FROM USERS WHERE Username = {ClaimName}").ToList();
 
+            // Set dates to first day of the month to current day
+            DateTime BeginningOfTheMonth = DateTime.Now.AddDays(-DateTime.Today.Day + 1);
+            DateTime Today = DateTime.Now;
 
-            return StatusCode(StatusCodes.Status200OK);
+            // Query reqired data
+            List<Income> IncomeList = _context.Incomes.FromSql($"SELECT * FROM Income WHERE IncomeDate >= {BeginningOfTheMonth} AND IncomeDate <= {Today} AND UserID = {UserList[0].UserId}").ToList();
+            List<Expenditure> ExpenditureList = _context.Expenditures.FromSql($"SELECT * FROM Expenditure WHERE ExpenditureDate >= {BeginningOfTheMonth} AND ExpenditureDate <= {Today} AND UserID = {UserList[0].UserId}").ToList();
+
+            // Calculate total income for the month
+            double TotalIncome = 0, TotalExpenditure = 0;
+
+            foreach (var income in IncomeList)
+            {
+                TotalIncome = TotalIncome + income.IncomeAmount;
+            }
+
+            // Calculate total expenditure for the month
+            foreach (var expenditure in ExpenditureList)
+            {
+                TotalExpenditure = TotalExpenditure + expenditure.ExpenditureAmount;
+            }
+
+            // Figure out the most common category for income and expenditure
+            var IncomeCategoryID = IncomeList.GroupBy(i => i.CategoryId)
+                .OrderByDescending(group => group.Count())
+                .Select(group => group.Key)
+                .FirstOrDefault();
+
+            var IncomeCategory = from c in _context.Categories
+                                 where c.CategoryId == IncomeCategoryID
+                                 select c.CategoryName;
+
+            var ExpenditureCategoryID = ExpenditureList.GroupBy(i => i.CategoryId)
+                .OrderByDescending(group => group.Count())
+                .Select(group => group.Key)
+                .FirstOrDefault();
+
+            var ExpenditureCategory = from c in _context.Categories
+                                      where c.CategoryId == ExpenditureCategoryID
+                                      select c.CategoryName;
+
+            // Create summary and add it to the list
+            MonthlySummary Summary = new MonthlySummary
+            {
+                StartingDate = BeginningOfTheMonth,
+                EndingDate = Today,
+                TotalIncome = TotalIncome,
+                TotalExpenditure = TotalExpenditure,
+                NetValue = TotalIncome - TotalExpenditure,
+                MostCommonIncomeCategory = IncomeCategory.FirstOrDefault(),
+                MostCommonExpenditureCategory = ExpenditureCategory.FirstOrDefault(),
+            };
+
+            return StatusCode(StatusCodes.Status200OK, Summary);
         }
 
     }
