@@ -87,14 +87,14 @@ public partial class BudgetAppDbContext : DbContext
             entity.Property(e => e.IncomeDate).HasColumnType("datetime");
             entity.Property(e => e.UserId).HasColumnName("UserID");
 
-            entity.HasOne(d => d.Category).WithMany()
-                .HasForeignKey(d => d.CategoryId)
-                .HasConstraintName("FK__Income__Category__656C112C");
+            //entity.HasOne(d => d.Category).WithMany()
+            //    .HasForeignKey(d => d.CategoryId)
+            //    .HasConstraintName("FK__Income__Category__656C112C");
 
-            entity.HasOne(d => d.User).WithMany()
-                .HasForeignKey(d => d.UserId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Income__UserID__66603565");
+            //entity.HasOne(d => d.User).WithMany()
+            //    .HasForeignKey(d => d.UserId)
+            //    .OnDelete(DeleteBehavior.ClientSetNull)
+            //    .HasConstraintName("FK__Income__UserID__66603565");
         });
 
         modelBuilder.Entity<User>(entity =>
