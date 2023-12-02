@@ -4,14 +4,17 @@ import { useState } from 'react';
 So when you come to debug it THIS IS WHY IT DOESN'T WORK. */
 import {ArrowRightIcon} from '@chakra-ui/icons'
 
+/* Imports for components. All components go into /components folder. */
 import Auth from './components/Auth';
 import Income from './components/Income';
 
+/* Styles.css has only global styles. */
 import './styles.css'
 
 const App = () => {
     const toast = useToast();
-    /* React usestate hook to change the status of login or whatever when it's called also translate to Finnish someday*/
+    /* React usestate hook to change the status of login. When handleLogin returns an OK response, useState changes to True. False means
+    the user sees "Login" page. */
     const [authenticated, setAuthenticated] = useState(false);
 
     const handleRegistration = async(userName, passWord) => {
@@ -90,8 +93,6 @@ const App = () => {
         /* Insert here about why the Flex works, tldr direction gives vertical/horizontal
         and height makes it use 100% of the height on screen idk translate to finnish sometime
         some stuff about HTML elements taking only the space they need unless told otherwise */
-        /*Maybe multiple cards instead of tabs, look into it
-        https://chakra-ui.com/docs/components/card */
         <Flex direction='column' justifyContent='center' align='center' height='100%'>
             <Box
                 zIndex="2"
@@ -103,6 +104,8 @@ const App = () => {
                 boxShadow="xl"
                 maxWidth="700px"
             >
+          {/* Read ChakraUI documentation of Tabs
+          https://chakra-ui.com/docs/components/tabs*/}
             <Tabs isFitted marginBottom='10' variant='soft-rounded'>
             <TabList background='blackAlpha.300' borderRadius='300' >
               <Tab _hover={{ color: 'white' }}  fontWeight="bold" textColor='teal.300'>Income</Tab>
