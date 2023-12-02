@@ -1,6 +1,8 @@
 import { useState, useCallback } from 'react'
 import { Button, Input, Tooltip} from '@chakra-ui/react'
 
+// Look at Login function for reference on how registartion works, the ideology is mostly the same.
+
 const Register = ({onRegister}) => {
     const [ userName, setUserName] = useState('');
     const [ passWord, setUserPassword] = useState('');

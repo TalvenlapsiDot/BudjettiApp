@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react'
-import {Box, Button, Container, Flex, Input, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody,
-    ModalCloseButton, Table, Thead, Tbody, Tfoot, Tr, Th, Td, TableCaption, TableContainer, useToast, useDisclosure} from '@chakra-ui/react'
+import {Box, Button,Input, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody,
+    ModalCloseButton, Table, Thead, Tbody, Tr, Th, Td, TableContainer, useToast, useDisclosure} from '@chakra-ui/react'
 
 const Income = () => {
 
@@ -8,9 +8,9 @@ const Income = () => {
   const toast = useToast();
 
   return (
-    //Maybe Card instead of Container
-    //https://chakra-ui.com/docs/components/card
     <>
+    {/* Chakra UI Box Documentation:
+    https://chakra-ui.com/docs/components/box */}
     <Box bg='gray.500' borderRadius='25' width='85%' height='600'>
     <Button
          left='550'
@@ -19,6 +19,32 @@ const Income = () => {
          backgroundColor='teal.200'
          onClick={onOpen}> Add Income</Button>
         <TableContainer>
+
+    {/* A code sample from another project which populates a Menu-Component with similar ideology to populating this table;
+     return (
+      <MenuGroup
+        key={name}
+        title={name}
+        color="cyan.400">
+
+        {group.sort(sortNames).map((race) => (
+          <MenuItem key={race.Name} onClick={() => setCurrentRace(race)}>
+            {race.Name}
+          </MenuItem>
+        ))}
+      </MenuGroup>
+    );
+
+    The function needs to map over the entries in database and then generate an entry on the Table for each item mapped.
+
+    Javascript .map function documentation and help:
+    https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map
+    https://www.w3schools.com/jsref/jsref_map.asp
+
+    */}
+    {/* ChakraUI Table documentation
+    https://chakra-ui.com/docs/components/table*/}
+
     <Table size='sm'>
     <Thead>
       <Tr>
@@ -57,6 +83,8 @@ const Income = () => {
                 <ModalHeader>Add Income</ModalHeader>
                 <ModalCloseButton/>
                 <ModalBody>
+          {/*This modal doesn't currently send info to database. Make an API call on the button press that sends in information from the inputs.
+          Look at the registration function and API call for reference point. */ }
             < Input
                 width="100%"
                 top='5'
@@ -72,8 +100,9 @@ const Income = () => {
                 top='30px'
                 variant='ghost'
                 backgroundColor='teal.200'
-                //Turn this into promise-based later
-                // https://chakra-ui.com/docs/components/toast
+                // Move Toast into an API call as a response to successfull API call.
+                // Look at Registration function and API call for reference.
+                // Make OnClick trigger the API call.
                 onClick={() => toast({
                     title: 'Added',
                     description: 'Successfully added income',
