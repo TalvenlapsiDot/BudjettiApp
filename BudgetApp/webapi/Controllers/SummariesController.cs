@@ -3,7 +3,6 @@ using Back_End.Models.Context;
 using Back_End.Models.Views;
 using Back_End.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -84,7 +83,7 @@ namespace Back_End.Controllers
                 EndingDate = EndingDate,
                 TotalIncome = TotalIncome,
                 TotalExpenditure = TotalExpenditure,
-                NetValue = TotalIncome - TotalExpenditure,
+                NetAmount = TotalIncome - TotalExpenditure,
                 BudgetRemaining = TotalBudget - TotalExpenditure,
                 MostCommonIncomeCategory = IncomeCategory.FirstOrDefault(),
                 MostCommonExpenditureCategory = ExpenditureCategory.FirstOrDefault(),
@@ -163,7 +162,7 @@ namespace Back_End.Controllers
                     EndingDate = EndingDate,
                     TotalIncome = TotalIncome,
                     TotalExpenditure = TotalExpenditure,
-                    NetValue = TotalIncome - TotalExpenditure,
+                    NetAmount = TotalIncome - TotalExpenditure,
                     BudgetRemaining = TotalBudget - TotalIncome,
                     MostCommonIncomeCategory = IncomeCategory.FirstOrDefault(),
                     MostCommonExpenditureCategory = ExpenditureCategory.FirstOrDefault(),
@@ -237,7 +236,7 @@ namespace Back_End.Controllers
                 EndingDate = Today,
                 TotalIncome = TotalIncome,
                 TotalExpenditure = TotalExpenditure,
-                NetValue = TotalIncome - TotalExpenditure,
+                NetAmount = TotalIncome - TotalExpenditure,
                 BudgetRemaining = TotalBudget - TotalIncome,
                 MostCommonIncomeCategory = IncomeCategory.FirstOrDefault(),
                 MostCommonExpenditureCategory = ExpenditureCategory.FirstOrDefault(),
