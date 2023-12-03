@@ -38,18 +38,24 @@ namespace Back_End.Controllers
             // Query reqired data
             List<Income> IncomeList = _context.Incomes.FromSql($"SELECT * FROM Income WHERE IncomeDate >= {@StartingDate} AND IncomeDate <= {@EndingDate} AND UserID = {UserList[0].UserId}").ToList();
             List<Expenditure> ExpenditureList = _context.Expenditures.FromSql($"SELECT * FROM Expenditure WHERE ExpenditureDate >= {@StartingDate} AND ExpenditureDate <= {@EndingDate} AND UserID = {UserList[0].UserId}").ToList();
+            List<Budget> BudgetList = _context.Budgets.FromSql($"SELECT * FROM Budget WHERE StartDate >= {StartingDate} AND EndDate <= {EndingDate} AND UserID = {UserList[0].UserId}").ToList();
 
             // Calculate total income and expenditure
-            double TotalIncome = 0, TotalExpenditure = 0;
+            double TotalIncome = 0, TotalExpenditure = 0, TotalBudget = 0;
 
             for (int i = 0; i < IncomeList.Count(); i++)
             {
-                TotalIncome = TotalIncome + IncomeList[i].IncomeAmount;
+                TotalIncome += IncomeList[i].IncomeAmount;
             }
 
             for (int i = 0; i < ExpenditureList.Count(); i++)
             {
-                TotalExpenditure = TotalExpenditure + ExpenditureList[i].ExpenditureAmount;
+                TotalExpenditure += ExpenditureList[i].ExpenditureAmount;
+            }
+
+            for (int i = 0; i < BudgetList.Count(); i++)
+            {
+                TotalBudget += BudgetList[i].BudgetAmount;
             }
 
             // Figure out the most common category for income and expenditure
@@ -79,6 +85,7 @@ namespace Back_End.Controllers
                 TotalIncome = TotalIncome,
                 TotalExpenditure = TotalExpenditure,
                 NetValue = TotalIncome - TotalExpenditure,
+                BudgetRemaining = TotalBudget - TotalExpenditure,
                 MostCommonIncomeCategory = IncomeCategory.FirstOrDefault(),
                 MostCommonExpenditureCategory = ExpenditureCategory.FirstOrDefault(),
             };
@@ -109,19 +116,25 @@ namespace Back_End.Controllers
                 // Query reqired data
                 List<Income> IncomeList = _context.Incomes.FromSql($"SELECT * FROM Income WHERE IncomeDate >= {StartingDate} AND IncomeDate <= {EndingDate} AND UserID = {UserList[0].UserId}").ToList();
                 List<Expenditure> ExpenditureList = _context.Expenditures.FromSql($"SELECT * FROM Expenditure WHERE ExpenditureDate >= {StartingDate} AND ExpenditureDate <= {EndingDate} AND UserID = {UserList[0].UserId}").ToList();
+                List<Budget> BudgetList = _context.Budgets.FromSql($"SELECT * FROM Budget WHERE StartDate >= {StartingDate} AND EndDate <= {EndingDate} AND UserID = {UserList[0].UserId}").ToList();
 
-                double TotalIncome = 0, TotalExpenditure = 0;
+                double TotalIncome = 0, TotalExpenditure = 0, TotalBudget = 0;
 
                 // Calculate total income for the month
                 foreach (var income in IncomeList)
                 {
-                    TotalIncome = TotalIncome + income.IncomeAmount;
+                    TotalIncome += income.IncomeAmount;
                 }
 
                 // Calculate total expenditure for the month
                 foreach (var expenditure in ExpenditureList)
                 {
-                    TotalExpenditure = TotalExpenditure + expenditure.ExpenditureAmount;
+                    TotalExpenditure += expenditure.ExpenditureAmount;
+                }
+
+                foreach (var budget in BudgetList)
+                {
+                    TotalBudget += + budget.BudgetAmount;
                 }
 
                 // Figure out the most common category for income and expenditure
@@ -151,6 +164,7 @@ namespace Back_End.Controllers
                     TotalIncome = TotalIncome,
                     TotalExpenditure = TotalExpenditure,
                     NetValue = TotalIncome - TotalExpenditure,
+                    BudgetRemaining = TotalBudget - TotalIncome,
                     MostCommonIncomeCategory = IncomeCategory.FirstOrDefault(),
                     MostCommonExpenditureCategory = ExpenditureCategory.FirstOrDefault(),
                 };
@@ -176,19 +190,25 @@ namespace Back_End.Controllers
             // Query reqired data
             List<Income> IncomeList = _context.Incomes.FromSql($"SELECT * FROM Income WHERE IncomeDate >= {BeginningOfTheMonth} AND IncomeDate <= {Today} AND UserID = {UserList[0].UserId}").ToList();
             List<Expenditure> ExpenditureList = _context.Expenditures.FromSql($"SELECT * FROM Expenditure WHERE ExpenditureDate >= {BeginningOfTheMonth} AND ExpenditureDate <= {Today} AND UserID = {UserList[0].UserId}").ToList();
+            List<Budget> BudgetList = _context.Budgets.FromSql($"SELECT * FROM Budget WHERE StartDate >= {BeginningOfTheMonth} AND EndDate <= {Today} AND UserID = {UserList[0].UserId}").ToList();
 
             // Calculate total income for the month
-            double TotalIncome = 0, TotalExpenditure = 0;
+            double TotalIncome = 0, TotalExpenditure = 0, TotalBudget = 0;
 
             foreach (var income in IncomeList)
             {
-                TotalIncome = TotalIncome + income.IncomeAmount;
+                TotalIncome += income.IncomeAmount;
             }
 
             // Calculate total expenditure for the month
             foreach (var expenditure in ExpenditureList)
             {
-                TotalExpenditure = TotalExpenditure + expenditure.ExpenditureAmount;
+                TotalExpenditure += expenditure.ExpenditureAmount;
+            }
+
+            foreach (var budget in BudgetList)
+            {
+                TotalBudget += budget.BudgetAmount;
             }
 
             // Figure out the most common category for income and expenditure
@@ -218,6 +238,7 @@ namespace Back_End.Controllers
                 TotalIncome = TotalIncome,
                 TotalExpenditure = TotalExpenditure,
                 NetValue = TotalIncome - TotalExpenditure,
+                BudgetRemaining = TotalBudget - TotalIncome,
                 MostCommonIncomeCategory = IncomeCategory.FirstOrDefault(),
                 MostCommonExpenditureCategory = ExpenditureCategory.FirstOrDefault(),
             };
