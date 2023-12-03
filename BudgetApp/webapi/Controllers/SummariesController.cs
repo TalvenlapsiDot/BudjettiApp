@@ -20,7 +20,7 @@ namespace Back_End.Controllers
             _context = context;
             _configuration = configuration;
         }
-
+        
         [HttpGet, Authorize]
         [Route("SummarizeSetDates/{StartingDate};{EndingDate}")]
         public IActionResult SummarizeSetDates(DateTime StartingDate, DateTime EndingDate)
