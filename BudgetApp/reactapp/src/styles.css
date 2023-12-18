@@ -1,0 +1,9 @@
+html, body, #root {
+  height: 100%;
+  width: 100%;
+}
+
+#root {
+  /*CSS doesn't understand js values and stuff so use CSS variables from ChakraUI */
+  background: var(--chakra-colors-gray-900);
+}
