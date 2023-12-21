@@ -28,6 +28,8 @@ namespace Back_End.Controllers
         private readonly Regex UsernameRules = new Regex(@"^[a-zA-Z0-9_-]{5,25}$");
         // Min length 10, max length 50, contains atleast one digit, upper & lowercase character
         private readonly Regex PasswordRules = new Regex("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{10,50}$");
+        // Min length 2, max length 50, can contain letters, numbers & - _ ., atleast one @
+        private readonly Regex EmailRules = new Regex(@"^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,50}$");
 
         [HttpPost]
         [Route("Register")]
@@ -36,11 +38,11 @@ namespace Back_End.Controllers
             // Get existing users with requested username. Use parameters to combat sql injection!
             List<User> ExistingUsers = _context.Users.FromSql($"SELECT * FROM Users WHERE Username = {@User.Username};").ToList();
 
-            if (User.Username.IsNullOrEmpty() || User.Password.IsNullOrEmpty())
+            if (User.Username.IsNullOrEmpty() || User.Password.IsNullOrEmpty() || User.Email.IsNullOrEmpty())
             {
                 return StatusCode(StatusCodes.Status204NoContent, "Empty fields!");
             }
-            else if (!UsernameRules.IsMatch(User.Username) || !PasswordRules.IsMatch(User.Password))
+            else if (!UsernameRules.IsMatch(User.Username) || !PasswordRules.IsMatch(User.Password) || !EmailRules.IsMatch(User.Email))
             {
                 return StatusCode(StatusCodes.Status406NotAcceptable, "Regex error. Check the rules!");
             }
@@ -49,10 +51,23 @@ namespace Back_End.Controllers
                 return StatusCode(StatusCodes.Status409Conflict, "User already exists!");
             }
 
+            // Create confirmation code
+            string DtNow = DateTime.Now.ToString();
+            string VerificationCode = DtNow
+                .Replace(" ", "")
+                .Replace("/", "")
+                .Replace(":", "")
+                .Replace(".", "");
+
             try
             {
-                _context.Database.ExecuteSqlRaw($"INSERT INTO Users VALUES ('{@User.Username}', '{@User.Password}');");
+                // Save account to database
+                _context.Database.ExecuteSqlRaw($"INSERT INTO Users VALUES ('{@User.Email}', '{VerificationCode}', '{@User.EmailVerified}','{@User.Username}', '{@User.Password}');");
                 await _context.SaveChangesAsync();
+
+                // Send verification email with confirmation code
+
+
             }
             catch (Exception ex)
             {
@@ -60,6 +75,34 @@ namespace Back_End.Controllers
             }
 
             return StatusCode(StatusCodes.Status201Created, $"User {User.Username} creation succesful!");
+        }
+
+        [HttpPost]
+        [Route("VerifyEmail")]
+        public async Task<IActionResult> VerifyEmail(string Code)
+        {
+            List<User> Users = _context.Users.FromSql($"SELECT * FROM Users WHERE VerificationCode = {Code};").ToList();
+
+            if (Users.Count() <= 0)
+            {
+                return StatusCode(StatusCodes.Status404NotFound, "Verification code doesn't belong to any user");
+            }
+
+            // Everything ok, set EmailVerified to true and save it
+            Users[0].EmailVerified = true;
+
+            try
+            {
+                // Update email verification status to database
+                _context.Database.ExecuteSqlRaw($"INSERT INTO Users (EmailVerified) VALUES ('{@Users[0].EmailVerified}');");
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+
+            return StatusCode(StatusCodes.Status200OK, "Email verified succesfully!");
         }
 
         [HttpPost]
