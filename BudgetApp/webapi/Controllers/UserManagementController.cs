@@ -33,16 +33,16 @@ namespace Back_End.Controllers
 
         [HttpPost]
         [Route("Register")]
-        public async Task<IActionResult> RegisterUser(User User)
+        public async Task<IActionResult> RegisterUser(RegisterationForm Form)
         {
             // Get existing users with requested username. Use parameters to combat sql injection!
-            List<User> ExistingUsers = _context.Users.FromSql($"SELECT * FROM Users WHERE Username = {@User.Username};").ToList();
+            List<User> ExistingUsers = _context.Users.FromSql($"SELECT * FROM Users WHERE Username = {Form.Username};").ToList();
 
-            if (User.Username.IsNullOrEmpty() || User.Password.IsNullOrEmpty() || User.Email.IsNullOrEmpty())
+            if (Form.Username.IsNullOrEmpty() || Form.Password.IsNullOrEmpty() || Form.Email.IsNullOrEmpty())
             {
                 return StatusCode(StatusCodes.Status204NoContent, "Empty fields!");
             }
-            else if (!UsernameRules.IsMatch(User.Username) || !PasswordRules.IsMatch(User.Password) || !EmailRules.IsMatch(User.Email))
+            else if (!UsernameRules.IsMatch(Form.Username) || !PasswordRules.IsMatch(Form.Password) || !EmailRules.IsMatch(Form.Email))
             {
                 return StatusCode(StatusCodes.Status406NotAcceptable, "Regex error. Check the rules!");
             }
@@ -58,15 +58,27 @@ namespace Back_End.Controllers
                 .Replace("/", "")
                 .Replace(":", "")
                 .Replace(".", "");
+            VerificationCode = VerificationCode.Substring(8);
+
+            // Set values to user object
+            User NewUser = new User
+            {
+                UserId = 0,
+                Username = Form.Username,
+                Password = Form.Password,
+                Email = Form.Email,
+                VerificationCode = VerificationCode,
+                EmailVerified = false
+            };
 
             try
             {
                 // Save account to database
-                _context.Database.ExecuteSqlRaw($"INSERT INTO Users VALUES ('{@User.Email}', '{VerificationCode}', '{@User.EmailVerified}','{@User.Username}', '{@User.Password}');");
+                _context.Database.ExecuteSqlRaw($"INSERT INTO Users (Username, Password, Email, VerificationCode, EmailVerified) VALUES ('{NewUser.Username}', '{NewUser.Password}', '{NewUser.Email}', '{NewUser.VerificationCode}', '{NewUser.EmailVerified}');");
                 await _context.SaveChangesAsync();
 
                 // Send verification email with confirmation code
-
+                await EmailService.SendConfirmationCode(Form.Email, VerificationCode, _configuration);
 
             }
             catch (Exception ex)
@@ -74,7 +86,7 @@ namespace Back_End.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
 
-            return StatusCode(StatusCodes.Status201Created, $"User {User.Username} creation succesful!");
+            return StatusCode(StatusCodes.Status201Created, $"User {Form.Username} creation succesful!");
         }
 
         [HttpPost]
@@ -107,12 +119,12 @@ namespace Back_End.Controllers
 
         [HttpPost]
         [Route("Login")]
-        public IActionResult Login(User User)
+        public IActionResult Login(LoginForm Form)
         {
             // Get existing users with requested username & password. Use parameters to combat sql injection!
-            List<User> ExistingUsers = _context.Users.FromSql($"SELECT * FROM Users WHERE Username = {@User.Username} AND Password = {@User.Password};").ToList();
+            List<User> ExistingUsers = _context.Users.FromSql($"SELECT * FROM Users WHERE Username = {@Form.Username} AND Password = {@Form.Password};").ToList();
 
-            if (User.Username.IsNullOrEmpty() || User.Password.IsNullOrEmpty())
+            if (Form.Username.IsNullOrEmpty() || Form.Password.IsNullOrEmpty())
             {
                 return StatusCode(StatusCodes.Status204NoContent, "Empty fields!");
             }
@@ -120,6 +132,13 @@ namespace Back_End.Controllers
             {
                 return StatusCode(StatusCodes.Status404NotFound, "User not found!");
             }
+
+            // Create user to pass onto JsonWebTokenServices
+            User User = new User
+            {
+                Username = Form.Username,
+                Password = Form.Password,
+            };
 
             // Generate a Jwt
             string Token = JsonWebTokenService.GenerateToken(User, _configuration);
@@ -202,12 +221,12 @@ namespace Back_End.Controllers
 
         [HttpPut, Authorize]
         [Route("Edit")]
-        public async Task<IActionResult> EditUser(User User)
+        public async Task<IActionResult> EditUser(EditUserForm Form)
         {
             // Use tokens name claim to acquire users data
             string ClaimName = JsonWebTokenService.GetUniqueName(Request, _configuration);
             List<User> Users = _context.Users.FromSql($"SELECT * FROM USERS WHERE Username = {ClaimName}").ToList();
-            List<User> Usernames = _context.Users.FromSql($"SELECT * FROM Users WHERE Username = {User.Username};").ToList();
+            List<User> Usernames = _context.Users.FromSql($"SELECT * FROM Users WHERE Username = {Form.Username};").ToList();
 
             if (Users.Count() <= 0) // Check if token claim name exists
             {
@@ -217,7 +236,7 @@ namespace Back_End.Controllers
             {
                 return StatusCode(StatusCodes.Status403Forbidden, "Username already exists!");
             }
-            else if (!UsernameRules.IsMatch(User.Username) || !PasswordRules.IsMatch(User.Password)) // Check regex
+            else if (!UsernameRules.IsMatch(Form.Username) || !PasswordRules.IsMatch(Form.Password)) // Check regex
             {
                 return StatusCode(StatusCodes.Status406NotAcceptable, "Regex error. Check the rules!");
             }
@@ -225,13 +244,14 @@ namespace Back_End.Controllers
             User EditedUser = new User
             {
                 UserId = Users[0].UserId,
-                Username = User.Username,
-                Password = User.Password
+                Email = Form.Email,
+                Username = Form.Username,
+                Password = Form.Password
             };
 
             try
             {
-                await _context.Database.ExecuteSqlRawAsync($"UPDATE Users SET Username = '{EditedUser.Username}', Password = '{EditedUser.Password}' WHERE UserID = {EditedUser.UserId}");
+                await _context.Database.ExecuteSqlRawAsync($"UPDATE Users SET Username = '{EditedUser.Username}', Password = '{EditedUser.Password}', Email = '{EditedUser.Email}' WHERE UserID = {EditedUser.UserId}");
                 await _context.SaveChangesAsync();
             }
             catch (Exception ex)
